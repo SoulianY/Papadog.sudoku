@@ -33,16 +33,18 @@ HTTPS 정적 호스팅(GitHub Pages, Netlify, Cloudflare Pages 등)에 올리면
 
 ## 퍼즐 난이도
 
-`src/puzzles.js`는 [QQwing](https://qqwing.com)으로 생성하며, 풀이에 필요한 기법으로 난이도를 나눕니다.
+`src/puzzles.js`는 [sudoku-core](https://github.com/komeilmehranfar/sudoku-core)로 생성합니다.
+사람이 쓰는 풀이 기법 순서로 L1–L10 등급을 매기며, 각 퍼즐은 **풀기 위해 꼭 필요한 가장 어려운 기법**으로 등급이 정해집니다.
 
-| 단계 | QQwing 등급 | 필요한 기법 |
-|---|---|---|
-| 초급 | Simple | 네이키드 싱글 |
-| 중급 | Easy | 히든 싱글 |
-| 상급 | Intermediate | 페어, 포인팅, 박스/라인 |
-| 최상급 | Expert | 추측(가정) 필요 |
+| 단계 | 등급 | 필요한 기법 | 주어진 숫자 |
+|---|---|---|---|
+| 초급 | L2 | 히든 싱글 | 42–43 |
+| 중급 | L3–L4 | 네이키드 싱글, 포인팅 | 25–34 |
+| 상급 | L5–L6 | 네이키드/히든 페어·트리플, X-Wing, Swordfish | 21–29 |
+| 최상급 | L7–L8 | Skyscraper, Kite, Y-Wing, W-Wing, 컬러링 | 22–27 |
 
-모든 퍼즐은 해가 하나뿐이고, 단계 안에서는 주어진 숫자가 많은 순으로 정렬됩니다.
+모든 퍼즐은 해가 하나뿐이고 추측 없이 논리로 풀립니다.
+단계 안에서는 낮은 등급 → 높은 등급, 같은 등급은 풀이 작업량(score) 순이라 1번이 가장 쉽고 100번이 가장 어렵습니다.
 
 ```sh
 npm run generate     # 퍼즐 400판 새로 생성
