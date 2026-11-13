@@ -1,0 +1,145 @@
+:root {
+  --bg: #f6f3ec;
+  --surface: #fffdf8;
+  --ink: #1d2433;
+  --muted: #7a7f8c;
+  --well: #e9e4d8;
+  --accent: #2f5bd3;
+  --c1: #e4574f;
+  --c2: #f0a032;
+  --c3: #e8c840;
+  --c4: #4cae6e;
+  --c5: #3a9bd6;
+  --c6: #5b6ee8;
+  --c7: #a45bd6;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16181d;
+    --surface: #1f2229;
+    --ink: #e6e8ee;
+    --muted: #8a909d;
+    --well: #2a2e37;
+    --accent: #7ea1ff;
+  }
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; touch-action: manipulation; }
+
+.game {
+  --board: min(calc(100vw - 32px), 440px, calc(100dvh - 300px));
+  width: var(--board);
+  margin: 0 auto;
+  padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.bar { display: flex; align-items: center; justify-content: space-between; height: 56px; }
+.bar h1 { margin: 0; font-size: 20px; letter-spacing: -0.02em; }
+.restart svg { width: 26px; height: 26px; fill: none; stroke: var(--ink); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+.scoreboard { position: relative; text-align: center; }
+.score { font-size: 44px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.best { color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums; }
+.combo {
+  position: absolute;
+  right: 0;
+  top: 8px;
+  font-weight: 800;
+  color: var(--accent);
+  opacity: 0;
+}
+.combo.pop { animation: pop 900ms ease-out; }
+@keyframes pop {
+  0% { opacity: 0; transform: scale(0.6); }
+  20% { opacity: 1; transform: scale(1.15); }
+  70% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; }
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 3px;
+  padding: 3px;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: 0 1px 0 rgb(0 0 0 / 0.04), inset 0 0 0 1px rgb(0 0 0 / 0.06);
+}
+.cell { border-radius: 5px; background: var(--well); }
+
+/* Filled tiles */
+.c1 { --tile: var(--c1); } .c2 { --tile: var(--c2); } .c3 { --tile: var(--c3); } .c4 { --tile: var(--c4); }
+.c5 { --tile: var(--c5); } .c6 { --tile: var(--c6); } .c7 { --tile: var(--c7); }
+.cell[class*=" c"], .piece i {
+  background: var(--tile);
+  box-shadow: inset 0 -3px 0 rgb(0 0 0 / 0.15);
+}
+.cell.ghost { background: var(--accent); opacity: 0.35; }
+.cell.will-clear { outline: 2px solid var(--accent); outline-offset: -2px; }
+.cell.clearing { animation: clear 280ms ease-in forwards; }
+@keyframes clear {
+  to { transform: scale(0.2); opacity: 0; }
+}
+
+/* Tray */
+.tray { display: grid; grid-template-columns: repeat(3, 1fr); height: calc(var(--board) / 3); }
+.slot { display: grid; place-items: center; touch-action: none; cursor: grab; }
+.slot .piece { --cell: calc(var(--board) / 8 * 0.5); }
+.slot.stuck .piece { opacity: 0.3; }
+.slot.dragging .piece { visibility: hidden; }
+
+.piece {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), var(--cell));
+  grid-template-rows: repeat(var(--rows), var(--cell));
+  gap: calc(var(--cell) * 0.08);
+}
+.piece i { border-radius: calc(var(--cell) * 0.16); }
+
+.floating {
+  position: fixed;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+.floating .piece { gap: 3px; filter: drop-shadow(0 6px 10px rgb(0 0 0 / 0.25)); }
+
+/* Game over */
+.over {
+  border: 0;
+  border-radius: 20px;
+  padding: 28px 24px 20px;
+  width: min(300px, 86vw);
+  background: var(--surface);
+  color: var(--ink);
+  text-align: center;
+}
+.over::backdrop { background: rgb(0 0 0 / 0.45); }
+.over h2 { margin: 0; font-size: 22px; }
+.final { margin: 8px 0 0; font-size: 48px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.final-best { margin: 0 0 20px; color: var(--muted); }
+.again {
+  width: 100%;
+  padding: 13px;
+  border-radius: 12px;
+  background: var(--accent);
+  color: var(--surface);
+  font-weight: 700;
+}

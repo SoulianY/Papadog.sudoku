@@ -12,6 +12,23 @@ ES 모듈을 쓰므로 정적 서버로 엽니다 (빌드 없음).
 npm start            # 또는: python3 -m http.server
 ```
 
+## 블록 퍼즐 (`blocks/`)
+
+▶ 플레이: https://souliany.github.io/Papadog.sudoku/blocks/
+
+8×8 판에 아래 블록 3개를 끌어다 놓아 가로·세로 줄을 채우면 지워집니다. 놓을 곳이 없으면 게임 끝.
+
+- 점수: 놓은 칸 1점, 한 번에 n줄 지우면 10·n²점 × 콤보(연속으로 줄을 지운 횟수)
+- 놓을 위치 미리보기, 지워질 줄 표시, 놓을 수 없는 블록은 흐리게
+- 진행 중인 게임과 최고 점수 자동 저장
+
+```
+blocks/src/pieces.js   블록 모양 (회전형 자동 생성)
+blocks/src/engine.js   규칙: 배치, 줄 지우기, 점수, 게임 끝 판정
+blocks/src/app.js      화면과 드래그 앤 드롭
+blocks/test/           규칙 테스트
+```
+
 ## 휴대폰 앱으로 설치
 
 HTTPS 정적 호스팅(GitHub Pages, Netlify, Cloudflare Pages 등)에 올리면 PWA로 설치됩니다.
