@@ -1,21 +1,22 @@
-// Piece shapes. Each base shape appears in every distinct rotation.
+// Piece shapes by tier. Each base shape appears in every distinct rotation.
+// Tier 0 = easy (small, fits almost anywhere), 1 = medium, 2 = hard (big or awkward).
 
 const BASES = [
-  '#',
-  '##',
-  '###',
-  '####',
-  '#####',
-  '##\n##',
-  '###\n###\n###',
-  '##\n##\n##',
-  '##\n#.',
-  '#..\n###',
-  '..#\n###',
-  '###\n.#.',
-  '##.\n.##',
-  '.##\n##.',
-  '###\n#..\n#..',
+  ['#', 0],
+  ['##', 0],
+  ['###', 0],
+  ['##\n##', 0],
+  ['##\n#.', 0],
+  ['####', 1],
+  ['#..\n###', 1],
+  ['..#\n###', 1],
+  ['###\n.#.', 1],
+  ['##\n##\n##', 1],
+  ['#####', 2],
+  ['##.\n.##', 2],
+  ['.##\n##.', 2],
+  ['###\n#..\n#..', 2],
+  ['###\n###\n###', 2],
 ];
 
 const parse = (shape) =>
@@ -39,10 +40,16 @@ function rotations(cells) {
   return [...seen.values()];
 }
 
-/** Every piece variant: { cells: [[row, col], ...], color: 1..n }. */
-export const SHAPES = BASES.map((base, i) => rotations(parse(base)).map((cells) => ({ cells, color: (i % 7) + 1 })));
+/** Every piece variant per base shape: { cells: [[row, col], ...], color: 1..7, tier }. */
+export const SHAPES = BASES.map(([base, tier], i) =>
+  rotations(parse(base)).map((cells) => ({ cells, color: (i % 7) + 1, tier })),
+);
 
-export function randomPiece(random = Math.random) {
-  const variants = SHAPES[Math.floor(random() * SHAPES.length)];
-  return variants[Math.floor(random() * variants.length)];
+const pick = (list, random) => list[Math.floor(random() * list.length)];
+
+/** A random piece; tierWeights[t] is the relative chance of a tier-t shape. */
+export function randomPiece(tierWeights, random = Math.random) {
+  let roll = random() * tierWeights.reduce((a, b) => a + b, 0);
+  const tier = tierWeights.findIndex((w) => (roll -= w) < 0);
+  return pick(pick(SHAPES.filter((v) => v[0].tier === tier), random), random);
 }

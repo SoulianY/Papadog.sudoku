@@ -34,19 +34,41 @@ export function fullLineCells(board) {
   return { cells, lines };
 }
 
-/** A fresh tray; rerolls a few times so at least one piece can be placed. */
-export function newTray(board, random = Math.random) {
+// Difficulty ramps with score: [score, easy, medium, hard] weights, linearly blended between rows.
+const CURVE = [
+  [0, 8, 2, 0],
+  [150, 6, 3, 1],
+  [500, 4, 4, 2],
+  [1200, 3, 4, 3],
+  [2500, 2, 4, 4],
+];
+// Below this score every piece of a new tray fits somewhere; above it, only one is guaranteed.
+const FRIENDLY_UNTIL = 300;
+
+export function tierWeights(score) {
+  const k = CURVE.findIndex(([s]) => s > score);
+  if (k === -1) return CURVE.at(-1).slice(1);
+  const [s0, ...w0] = CURVE[k - 1];
+  const [s1, ...w1] = CURVE[k];
+  const t = (score - s0) / (s1 - s0);
+  return w0.map((w, i) => w + (w1[i] - w) * t);
+}
+
+/** A fresh tray for this score; rerolls a few times so it can be played. */
+export function newTray(board, score, random = Math.random) {
+  const weights = tierWeights(score);
+  const playable = (p) => fitsAnywhere(board, p);
   let tray;
   for (let attempt = 0; attempt < 20; attempt++) {
-    tray = Array.from({ length: TRAY_SIZE }, () => randomPiece(random));
-    if (tray.some((p) => fitsAnywhere(board, p))) break;
+    tray = Array.from({ length: TRAY_SIZE }, () => randomPiece(weights, random));
+    if (score < FRIENDLY_UNTIL ? tray.every(playable) : tray.some(playable)) break;
   }
   return tray;
 }
 
 export function newGame(random = Math.random) {
   const board = Array(SIZE * SIZE).fill(0);
-  return { board, tray: newTray(board, random), score: 0, streak: 0, over: false };
+  return { board, tray: newTray(board, 0, random), score: 0, streak: 0, over: false };
 }
 
 /** Points: 1 per cell placed; clearing n lines gives 10·n² times the combo streak. */
@@ -68,7 +90,7 @@ export function play(state, slot, row, col, random = Math.random) {
   const streak = lines > 0 ? state.streak + 1 : 0;
   const score = state.score + points(piece.cells.length, lines, streak);
   let tray = state.tray.map((p, k) => (k === slot ? null : p));
-  if (tray.every((p) => p === null)) tray = newTray(board, random);
+  if (tray.every((p) => p === null)) tray = newTray(board, score, random);
   const over = !tray.some((p) => p && fitsAnywhere(board, p));
 
   return { state: { board, tray, score, streak, over }, cleared, lines };

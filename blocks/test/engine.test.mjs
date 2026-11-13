@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { SHAPES } from '../src/pieces.js';
-import { SIZE, fits, newGame, play, points } from '../src/engine.js';
+import { SIZE, fits, fitsAnywhere, newGame, newTray, play, points, tierWeights } from '../src/engine.js';
 
 const piece = (cells) => ({ cells, color: 1 });
 const single = piece([[0, 0]]);
@@ -11,7 +11,7 @@ test('shapes expand to distinct rotations', () => {
   const variants = SHAPES.flat();
   assert.equal(new Set(variants.map((v) => JSON.stringify(v.cells))).size, variants.length);
   assert.equal(SHAPES[1].length, 2); // domino: horizontal + vertical
-  assert.equal(SHAPES[5].length, 1); // 2×2 square
+  assert.equal(SHAPES[3].length, 1); // 2×2 square
 });
 
 test('fits respects edges and occupied cells', () => {
@@ -49,4 +49,17 @@ test('illegal moves are rejected, used trays refill, a stuck tray ends the game'
   const board = Array(SIZE * SIZE).fill(0).map((_, i) => ((Math.floor(i / SIZE) + i) % 2 ? 0 : 3)); // checkerboard
   const stuck = play({ board, tray: [single, bar(2), null], score: 0, streak: 0, over: false }, 0, 0, 1).state;
   assert.equal(stuck.over, true);
+});
+
+test('hard pieces start at zero and their share grows with score', () => {
+  assert.equal(tierWeights(0)[2], 0);
+  const hardShare = (score) => tierWeights(score)[2] / tierWeights(score).reduce((a, b) => a + b);
+  const scores = [0, 100, 300, 800, 2000, 5000];
+  scores.slice(1).forEach((s, k) => assert.ok(hardShare(s) > hardShare(scores[k]), `score ${s}`));
+});
+
+test('early trays are fully playable', () => {
+  const board = Array(SIZE * SIZE).fill(0);
+  for (let i = 0; i < 40; i++) board[i] = 1; // top five rows filled
+  for (let k = 0; k < 50; k++) assert.ok(newTray(board, 0).every((p) => fitsAnywhere(board, p)));
 });
