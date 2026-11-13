@@ -42,7 +42,7 @@ npm test             # 퍼즐 데이터 검증 (개수, 유일해, 정답, 난�
 
 ```
 index.html, styles.css
-src/app.js        화면·라우팅 (#/, #/easy, #/easy/12)
+src/app.js        화면·라우팅 (#easy, #easy-12)
 src/game.js       한 판의 상태: 입력, 메모, 실행취소, 힌트
 src/sudoku.js     보드 헬퍼 (행/열/박스, PEERS)
 src/storage.js    진행 저장

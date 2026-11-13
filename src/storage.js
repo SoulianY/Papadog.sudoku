@@ -3,8 +3,20 @@
 
 const KEY = 'sudoku';
 
-const load = () => JSON.parse(localStorage.getItem(KEY) ?? '{"solved":{},"saves":{}}');
-const store = (data) => localStorage.setItem(KEY, JSON.stringify(data));
+// Storage can be unavailable (private mode, sandboxed frames): play still works, just without saving.
+function load() {
+  try {
+    const data = JSON.parse(localStorage.getItem(KEY));
+    if (data) return data;
+  } catch {}
+  return { solved: {}, saves: {} };
+}
+
+function store(data) {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(data));
+  } catch {}
+}
 
 export const puzzleId = (level, index) => `${level}-${index}`;
 

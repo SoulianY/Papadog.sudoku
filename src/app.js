@@ -1,4 +1,4 @@
-// UI: hash routes  #/  (levels)  ·  #/easy  (puzzle list)  ·  #/easy/12  (play)
+// UI: hash routes  (none) levels  ·  #easy  puzzle list  ·  #easy-12  play
 import { PUZZLES } from './puzzles.js';
 import { Game } from './game.js';
 import { PEERS, row, col, box } from './sudoku.js';
@@ -20,7 +20,7 @@ const formatTime = (s) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${Stri
 function route() {
   active?.stop();
   active = null;
-  const [level, n] = location.hash.replace(/^#\/?/, '').split('/');
+  const [level, n] = location.hash.slice(1).split('-');
   const index = Number(n);
   if (PUZZLES[level] && index >= 1 && index <= PUZZLES[level].length) showGame(level, index);
   else if (PUZZLES[level]) showList(level);
@@ -34,7 +34,7 @@ function showLevels() {
       ${LEVELS.map(({ key, name }) => {
         const solved = progress.countSolved(key);
         return `
-          <a class="level level-${key}" href="#/${key}">
+          <a class="level level-${key}" href="#${key}">
             <span class="level-name">${name}</span>
             <span class="level-count">${solved} / ${PUZZLES[key].length}</span>
             <span class="level-meter"><span style="width:${solved}%"></span></span>
@@ -46,7 +46,7 @@ function showLevels() {
 function showList(level) {
   app.innerHTML = `
     <header class="bar">
-      <a class="back" href="#/" aria-label="뒤로">‹</a>
+      <a class="back" href="#" aria-label="뒤로">‹</a>
       <h1>${levelName(level)}</h1>
       <span class="bar-side">${progress.countSolved(level)} / ${PUZZLES[level].length}</span>
     </header>
@@ -54,7 +54,7 @@ function showList(level) {
       ${PUZZLES[level].map((_, k) => {
         const id = progress.puzzleId(level, k + 1);
         const state = progress.getSolvedTime(id) !== undefined ? 'solved' : progress.getSave(id) ? 'started' : '';
-        return `<a class="puzzle ${state}" href="#/${level}/${k + 1}">${k + 1}</a>`;
+        return `<a class="puzzle ${state}" href="#${level}-${k + 1}">${k + 1}</a>`;
       }).join('')}
     </main>`;
 }
@@ -69,7 +69,7 @@ function showGame(level, index) {
 
   app.innerHTML = `
     <header class="bar">
-      <a class="back" href="#/${level}" aria-label="뒤로">‹</a>
+      <a class="back" href="#${level}" aria-label="뒤로">‹</a>
       <h1>${levelName(level)} ${index}</h1>
       <span class="bar-side timer"></span>
     </header>
@@ -91,8 +91,8 @@ function showGame(level, index) {
       <h2>완료!</h2>
       <p class="done-time"></p>
       <div class="done-actions">
-        <a class="secondary" href="#/${level}">목록</a>
-        ${index < PUZZLES[level].length ? `<a href="#/${level}/${index + 1}" autofocus>다음 퍼즐</a>` : ''}
+        <a class="secondary" href="#${level}">목록</a>
+        ${index < PUZZLES[level].length ? `<a href="#${level}-${index + 1}" autofocus>다음 퍼즐</a>` : ''}
       </div>
     </dialog>`;
 
