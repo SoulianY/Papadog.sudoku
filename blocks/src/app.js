@@ -1,5 +1,6 @@
 // UI: board, tray, drag-and-drop, game over.
-import { SIZE, fits, fitsAnywhere, fullLineCells, newGame, play } from './engine.js';
+import { SIZE, fits, fitsAnywhere, fullLineCells } from './board.js';
+import { newGame, play } from './engine.js';
 import * as storage from './storage.js';
 
 const CLEAR_MS = 280;

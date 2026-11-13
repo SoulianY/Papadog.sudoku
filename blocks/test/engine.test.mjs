@@ -1,7 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { SHAPES } from '../src/pieces.js';
-import { SIZE, fits, fitsAnywhere, newGame, newTray, play, points, tierWeights } from '../src/engine.js';
+import { SIZE, fits, fitsAnywhere, fullLineCells } from '../src/board.js';
+import { curveAt, fit, newTray } from '../src/dealer.js';
+import { newGame, play, points } from '../src/engine.js';
 
 const piece = (cells) => ({ cells, color: 1 });
 const single = piece([[0, 0]]);
@@ -51,15 +53,49 @@ test('illegal moves are rejected, used trays refill, a stuck tray ends the game'
   assert.equal(stuck.over, true);
 });
 
-test('hard pieces start at zero and their share grows with score', () => {
-  assert.equal(tierWeights(0)[2], 0);
-  const hardShare = (score) => tierWeights(score)[2] / tierWeights(score).reduce((a, b) => a + b);
+test('hard pieces start at zero, grow with score, and the fit bonus fades', () => {
+  assert.equal(curveAt(0).tiers[2], 0);
+  const hardShare = (score) => curveAt(score).tiers[2] / curveAt(score).tiers.reduce((a, b) => a + b);
   const scores = [0, 100, 300, 800, 2000, 5000];
-  scores.slice(1).forEach((s, k) => assert.ok(hardShare(s) > hardShare(scores[k]), `score ${s}`));
+  scores.slice(1).forEach((s, k) => {
+    assert.ok(hardShare(s) > hardShare(scores[k]), `hard share at ${s}`);
+    assert.ok(curveAt(s).help <= curveAt(scores[k]).help, `help at ${s}`);
+  });
+});
+
+test('fit rewards completing lines and snug spots; -1 when nothing fits', () => {
+  const board = Array(SIZE * SIZE).fill(0);
+  for (let c = 3; c < SIZE; c++) board[56 + c] = 1; // bottom row missing cols 0-2
+  const vertical = piece([[0, 0], [1, 0], [2, 0]]);
+  assert.ok(fit(board, bar(3)) > 0.5); // completes the row
+  assert.ok(fit(board, vertical) <= 0.5); // can't complete anything
+  assert.ok(fit(board, bar(3)) > fit(board, vertical));
+  const full = Array(SIZE * SIZE).fill(1);
+  assert.equal(fit(full, single), -1);
 });
 
 test('early trays are fully playable', () => {
   const board = Array(SIZE * SIZE).fill(0);
   for (let i = 0; i < 40; i++) board[i] = 1; // top five rows filled
   for (let k = 0; k < 50; k++) assert.ok(newTray(board, 0).every((p) => fitsAnywhere(board, p)));
+});
+
+test('early trays favor pieces that suit the board; late trays much less', () => {
+  const board = Array(SIZE * SIZE).fill(0);
+  for (let c = 3; c < SIZE; c++) board[56 + c] = 1; // bottom row missing cols 0-2
+  const lineFinisher = (p) => {
+    for (let r = 0; r < SIZE; r++) for (let c = 0; c < SIZE; c++) {
+      if (!fits(board, p, r, c)) continue;
+      const next = [...board];
+      for (const [dr, dc] of p.cells) next[(r + dr) * SIZE + c + dc] = 1;
+      if (fullLineCells(next).lines > 0) return true;
+    }
+    return false;
+  };
+  const rate = (score) => {
+    let hits = 0;
+    for (let k = 0; k < 200; k++) hits += newTray(board, score).filter(lineFinisher).length;
+    return hits / 600;
+  };
+  assert.ok(rate(0) > rate(5000) * 1.5, `${rate(0)} vs ${rate(5000)}`);
 });

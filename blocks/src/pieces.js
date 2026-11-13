@@ -44,12 +44,3 @@ function rotations(cells) {
 export const SHAPES = BASES.map(([base, tier], i) =>
   rotations(parse(base)).map((cells) => ({ cells, color: (i % 7) + 1, tier })),
 );
-
-const pick = (list, random) => list[Math.floor(random() * list.length)];
-
-/** A random piece; tierWeights[t] is the relative chance of a tier-t shape. */
-export function randomPiece(tierWeights, random = Math.random) {
-  let roll = random() * tierWeights.reduce((a, b) => a + b, 0);
-  const tier = tierWeights.findIndex((w) => (roll -= w) < 0);
-  return pick(pick(SHAPES.filter((v) => v[0].tier === tier), random), random);
-}
