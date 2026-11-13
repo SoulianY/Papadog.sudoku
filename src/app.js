@@ -216,6 +216,9 @@ function showGame(level, index) {
   render();
 }
 
+// Some hosts (sandboxed previews) refuse service workers; the game works without one.
+navigator.serviceWorker?.register('sw.js').catch(() => {});
+
 addEventListener('hashchange', route);
 document.addEventListener('visibilitychange', () => document.hidden && active?.save());
 route();

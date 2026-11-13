@@ -10,6 +10,15 @@ ES 모듈을 쓰므로 정적 서버로 엽니다 (빌드 없음).
 npm start            # 또는: python3 -m http.server
 ```
 
+## 휴대폰 앱으로 설치
+
+HTTPS 정적 호스팅(GitHub Pages, Netlify, Cloudflare Pages 등)에 올리면 PWA로 설치됩니다.
+
+- Android Chrome: 메뉴 → **홈 화면에 추가**(앱 설치)
+- iPhone Safari: 공유 → **홈 화면에 추가**
+
+한 번 열고 나면 오프라인에서도 플레이됩니다 (`sw.js`).
+
 ## 기능
 
 - 난이도별 100판 목록, 완료(파란색)·진행 중(점) 표시
@@ -42,6 +51,7 @@ npm test             # 퍼즐 데이터 검증 (개수, 유일해, 정답, 난�
 
 ```
 index.html, styles.css
+manifest.webmanifest, sw.js, icons/   PWA 설치·오프라인
 src/app.js        화면·라우팅 (#easy, #easy-12)
 src/game.js       한 판의 상태: 입력, 메모, 실행취소, 힌트
 src/sudoku.js     보드 헬퍼 (행/열/박스, PEERS)
