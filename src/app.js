@@ -32,7 +32,7 @@ function showLevels() {
     <header class="bar"><h1>스도쿠</h1></header>
     <main class="levels">
       ${LEVELS.map(({ key, name }) => {
-        const solved = progress.countSolved(key);
+        const solved = progress.countSolved(PUZZLES[key]);
         return `
           <a class="level level-${key}" href="#${key}">
             <span class="level-name">${name}</span>
@@ -48,22 +48,20 @@ function showList(level) {
     <header class="bar">
       <a class="back" href="#" aria-label="뒤로">‹</a>
       <h1>${levelName(level)}</h1>
-      <span class="bar-side">${progress.countSolved(level)} / ${PUZZLES[level].length}</span>
+      <span class="bar-side">${progress.countSolved(PUZZLES[level])} / ${PUZZLES[level].length}</span>
     </header>
     <main class="puzzles">
-      ${PUZZLES[level].map((_, k) => {
-        const id = progress.puzzleId(level, k + 1);
-        const state = progress.getSolvedTime(id) !== undefined ? 'solved' : progress.getSave(id) ? 'started' : '';
+      ${PUZZLES[level].map(([puzzle], k) => {
+        const state = progress.getSolvedTime(puzzle) !== undefined ? 'solved' : progress.getSave(puzzle) ? 'started' : '';
         return `<a class="puzzle ${state}" href="#${level}-${k + 1}">${k + 1}</a>`;
       }).join('')}
     </main>`;
 }
 
 function showGame(level, index) {
-  const id = progress.puzzleId(level, index);
   const [puzzle, solution] = PUZZLES[level][index - 1];
-  const game = new Game(puzzle, solution, progress.getSave(id));
-  const best = progress.getSolvedTime(id);
+  const game = new Game(puzzle, solution, progress.getSave(puzzle));
+  const best = progress.getSolvedTime(puzzle);
   let selected = null;
   let noteMode = false;
 
@@ -132,7 +130,7 @@ function showGame(level, index) {
 
   function changed() {
     if (game.solved) {
-      progress.markSolved(id, game.elapsed);
+      progress.markSolved(puzzle, game.elapsed);
       selected = null;
       render();
       clearInterval(ticker);
@@ -204,7 +202,7 @@ function showGame(level, index) {
     timer.textContent = formatTime(game.elapsed);
   }, 1000);
 
-  const save = () => game.solved || progress.writeSave(id, game.toSave());
+  const save = () => game.solved || progress.writeSave(puzzle, game.toSave());
   active = {
     save,
     stop() {

@@ -1,5 +1,6 @@
-// Progress persisted in localStorage.
-// { solved: { "easy-12": seconds }, saves: { "easy-12": { values, notes, elapsed } } }
+// Progress persisted in localStorage, keyed by the puzzle's 81-digit string so it
+// stays attached to the right puzzle even if the puzzle list is regenerated.
+// { solved: { [puzzle]: seconds }, saves: { [puzzle]: { values, notes, elapsed } } }
 
 const KEY = 'sudoku';
 
@@ -18,13 +19,13 @@ function store(data) {
   } catch {}
 }
 
-export const puzzleId = (level, index) => `${level}-${index}`;
-
 export const getSolvedTime = (id) => load().solved[id];
 export const getSave = (id) => load().saves[id];
 
-export const countSolved = (level) =>
-  Object.keys(load().solved).filter((id) => id.startsWith(`${level}-`)).length;
+export function countSolved(puzzles) {
+  const { solved } = load();
+  return puzzles.filter(([puzzle]) => puzzle in solved).length;
+}
 
 export function writeSave(id, save) {
   const data = load();
