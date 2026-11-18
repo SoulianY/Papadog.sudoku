@@ -85,16 +85,19 @@ for (const c of candidates.values()) {
 console.log('moves → candidates:', [...byMoves].sort((a, b) => a[0] - b[0]).map(([m, l]) => `${m}:${l.length}`).join(' '));
 
 if (process.argv[3] !== 'stats') {
-  // Spread the 500 levels across the difficulty range so each move count gets a fair share,
-  // easiest first.
-  const levels = [];
+  // Spread the 500 levels across the difficulty range: raise a per-move-count quota until the
+  // total reaches 500 (rare hard counts give all they have), trimming any excess from the easy end.
   const moves = [...byMoves.keys()].sort((a, b) => a - b);
-  const pools = moves.map((m) => byMoves.get(m));
-  let remaining = LEVEL_COUNT;
-  for (let i = 0; i < moves.length; i++) {
-    const share = Math.min(pools[i].length, Math.ceil(remaining / (moves.length - i)));
-    levels.push(...pools[i].slice(0, share));
-    remaining -= share;
+  const pool = (m) => byMoves.get(m);
+  const total = (q) => moves.reduce((sum, m) => sum + Math.min(pool(m).length, q), 0);
+  let quota = 0;
+  while (total(quota) < LEVEL_COUNT) quota++;
+  let excess = total(quota) - LEVEL_COUNT;
+  const levels = [];
+  for (const m of moves) {
+    let take = Math.min(pool(m).length, quota);
+    if (excess > 0 && take === quota) { take--; excess--; }
+    levels.push(...pool(m).slice(0, take));
   }
   levels.sort((a, b) => a.moves - b.moves);
   writeFileSync(new URL('../levels.json', import.meta.url), JSON.stringify(levels.map((l) => ({ moves: l.moves, pieces: l.pieces }))));
