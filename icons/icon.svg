@@ -1,12 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <rect width="512" height="512" fill="#2f5bd3"/>
-  <rect x="96" y="96" width="148" height="148" rx="30" fill="#fffdf8"/>
-  <path d="M145 96v148M195 96v148M96 145h148M96 195h148" stroke="#2f5bd3" stroke-width="8" opacity="0.35"/>
-  <rect x="268" y="96" width="148" height="148" rx="30" fill="#e4574f"/>
-  <rect x="268" y="96" width="70" height="70" rx="16" fill="#fffdf8" opacity="0.35"/>
-  <rect x="96" y="268" width="148" height="148" rx="30" fill="#e8c840"/>
-  <polyline points="132,304 208,304 208,380 132,380" fill="none" stroke="#1d2433" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
-  <rect x="268" y="268" width="148" height="148" rx="30" fill="#4cae6e"/>
-  <rect x="306" y="296" width="72" height="34" rx="10" fill="#fffdf8" opacity="0.5"/>
-  <rect x="290" y="354" width="104" height="34" rx="10" fill="#fffdf8" opacity="0.5"/>
+  <!-- ears -->
+  <path d="M150 150 C 96 150, 78 240, 100 300 C 112 334, 150 330, 164 300 L 190 190 Z" fill="#7a4a2b"/>
+  <path d="M362 150 C 416 150, 434 240, 412 300 C 400 334, 362 330, 348 300 L 322 190 Z" fill="#7a4a2b"/>
+  <!-- head -->
+  <ellipse cx="256" cy="250" rx="118" ry="112" fill="#d9a066"/>
+  <!-- eye patch -->
+  <ellipse cx="300" cy="222" rx="38" ry="34" fill="#b97a45"/>
+  <!-- muzzle -->
+  <ellipse cx="256" cy="300" rx="70" ry="52" fill="#fbecd6"/>
+  <!-- eyes -->
+  <circle cx="212" cy="226" r="13" fill="#1d2433"/>
+  <circle cx="300" cy="226" r="13" fill="#1d2433"/>
+  <circle cx="216" cy="221" r="4" fill="#fff"/>
+  <circle cx="304" cy="221" r="4" fill="#fff"/>
+  <!-- eyebrows: a little fatherly -->
+  <path d="M192 196 q20 -12 40 -2" stroke="#5a3520" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M280 194 q20 -10 40 2" stroke="#5a3520" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <!-- nose and mouth -->
+  <ellipse cx="256" cy="280" rx="22" ry="15" fill="#1d2433"/>
+  <path d="M256 295 v14 M256 309 q-16 16 -32 4 M256 309 q16 16 32 4" stroke="#1d2433" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <!-- bow tie -->
+  <path d="M256 372 L206 350 L206 398 Z" fill="#f2b630"/>
+  <path d="M256 372 L306 350 L306 398 Z" fill="#f2b630"/>
+  <circle cx="256" cy="374" r="12" fill="#e09a12"/>
 </svg>
