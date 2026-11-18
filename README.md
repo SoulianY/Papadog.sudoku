@@ -8,6 +8,7 @@
 | 블록 퍼즐 | https://souliany.github.io/Papadog.sudoku/blocks/ | `blocks/` |
 | 잇다 | https://souliany.github.io/Papadog.sudoku/itda/ | `itda/` |
 | 낙하 | https://souliany.github.io/Papadog.sudoku/drop/ | `drop/` |
+| 차례 | https://souliany.github.io/Papadog.sudoku/charye/ | `charye/` |
 
 루트에는 게임 선택 화면(`index.html`, `hub.css`)과 공용 PWA 파일(`manifest.webmanifest`, `sw.js`, `icons/`)만 있습니다.
 
@@ -84,6 +85,22 @@ drop/src/render.js   캔버스 그리기
 drop/src/input.js    터치 제스처·키보드
 drop/src/app.js      게임 루프, 화면
 drop/test/           규칙 테스트
+```
+
+## 차례 (`charye/`)
+
+판에 흩어진 숫자를 1부터 차례로 누르는 게임. 누른 칸에는 아직 안 나온 다음 숫자가 나타나고, 마지막 숫자까지 다 나오면 누른 칸은 빈칸으로 남습니다.
+
+- 300단계: 5×5부터 10×10까지 크기마다 50단계. 크기마다 첫 단계는 칸 수만큼(5×5는 1–25), 단계마다 마지막 숫자가 하나씩 늘어남 (5×5 50단계는 1–74, 10×10 50단계는 1–149)
+- 숫자 배치는 매번 무작위. 앞 단계를 깨면 다음 단계가 열림
+- 시간은 1을 누르는 순간부터. 틀린 숫자는 빨갛게 흔들리기만 하고 벌점 없음. 단계별 최고 기록 저장
+- 칸은 손가락이 닿는 순간 눌림(빠른 연타용). 결과 창은 마지막 손가락을 뗀 뒤 뜸
+
+```
+charye/src/stages.js  단계 번호 → 판 크기·마지막 숫자
+charye/src/round.js   한 판의 규칙: 배치, 누르기, 다음 숫자 채우기
+charye/src/main.js    화면, 시간, 단계 열림
+charye/test/          규칙 테스트
 ```
 
 ## 휴대폰 앱으로 설치
