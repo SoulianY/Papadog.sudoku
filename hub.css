@@ -59,4 +59,6 @@ h1 { margin: 0 0 20px; font-size: 28px; letter-spacing: -0.03em; }
 .tile { fill: none; stroke: var(--line); stroke-width: 1.5; }
 .tile.hot { fill: var(--accent); stroke: none; }
 .digit.on { fill: #fff; }
+.lot { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+.gap { stroke: var(--surface); stroke-width: 4; }
 .num { fill: var(--bg); font-size: 8px; font-weight: 800; text-anchor: middle; }

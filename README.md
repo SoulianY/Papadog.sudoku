@@ -9,6 +9,7 @@
 | 잇다 | https://souliany.github.io/Papadog.sudoku/itda/ | `itda/` |
 | 낙하 | https://souliany.github.io/Papadog.sudoku/drop/ | `drop/` |
 | 차례 | https://souliany.github.io/Papadog.sudoku/charye/ | `charye/` |
+| 출차 | https://souliany.github.io/Papadog.sudoku/chulcha/ | `chulcha/` |
 
 루트에는 게임 선택 화면(`index.html`, `hub.css`)과 공용 PWA 파일(`manifest.webmanifest`, `sw.js`, `icons/`)만 있습니다.
 
@@ -101,6 +102,26 @@ charye/src/stages.js  단계 번호 → 판 크기·마지막 숫자
 charye/src/round.js   한 판의 규칙: 배치, 누르기, 다음 숫자 채우기
 charye/src/main.js    화면, 시간, 단계 열림
 charye/test/          규칙 테스트
+```
+
+## 출차 (`chulcha/`)
+
+6×6 주차장에서 블록을 밀어 길을 열고 노란 블록을 오른쪽 출구로 빼내는 퍼즐. 블록은 놓인 방향(가로/세로)으로만 움직입니다.
+
+- 500단계, 최소 수가 적은 판부터 많은 판 순서. 단계마다 최소 몇 수에 풀리는지 표시
+- 블록을 끌면 손가락을 따라 움직이고 놓으면 칸에 맞춰짐. 한 블록을 한 번 옮기면 1수
+- 되돌리기·처음부터, 단계별 최소 사용 수 저장, 최소 수로 풀면 노란색 표시
+- 퍼즐 생성 (`chulcha/tools/generate-levels.mjs`): 블록을 무작위로 놓고 그 블록들이 갈 수 있는 모든 배치를 탐색한 뒤, 풀린 배치에서 가장 먼 배치를 문제로 고름. 최소 수별로 고르게 500판을 뽑아 정렬
+
+```
+chulcha/src/board.js    판 규칙: 블록 칸, 밀 수 있는 범위, 완료 판정
+chulcha/src/solver.js   최소 수 탐색 (너비 우선)
+chulcha/src/main.js     화면, 끌기, 되돌리기
+chulcha/test/           퍼즐 검증 (500판, 겹침 없음, 최소 수 일치, 정렬)
+```
+
+```sh
+node chulcha/tools/generate-levels.mjs   # chulcha/levels.json 재생성 (고정 시드, 수십 분)
 ```
 
 ## 휴대폰 앱으로 설치
