@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#f6f1e7">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="잇다">
+  <title>잇다 — 한붓 숫자 잇기</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="src/main.js"></script>
+</head>
+<body>
+  <main id="home" hidden>
+    <header class="hero">
+      <h1>잇다</h1>
+      <p class="tagline">1부터 차례로, 모든 칸을 한 번에.</p>
+    </header>
+    <section class="rules">
+      <ol>
+        <li><b>1</b>에서 시작해 손가락으로 길을 그리세요.</li>
+        <li>숫자는 순서대로 지나야 해요.</li>
+        <li>모든 칸을 한 번씩 채우고 마지막 숫자에서 끝내세요.</li>
+        <li>굵은 벽은 넘을 수 없어요.</li>
+      </ol>
+    </section>
+    <div class="progress">
+      <div class="progress-track"><div id="progress-bar"></div></div>
+      <span id="progress-text"></span>
+    </div>
+    <button id="continue" class="primary"></button>
+    <nav id="filters" class="filters" aria-label="난이도">
+      <button data-filter="all" aria-pressed="true">전체</button>
+      <button data-filter="easy" aria-pressed="false">쉬움</button>
+      <button data-filter="normal" aria-pressed="false">보통</button>
+      <button data-filter="hard" aria-pressed="false">어려움</button>
+    </nav>
+    <div id="level-list" class="level-list"></div>
+  </main>
+
+  <main id="game" hidden>
+    <header class="topbar">
+      <button id="back" class="icon" aria-label="목록으로">‹</button>
+      <div class="title">
+        <h2 id="level-title"></h2>
+        <span id="level-badge" class="badge"></span>
+      </div>
+      <div class="clock">
+        <span id="timer">00:00</span>
+        <small id="best"></small>
+      </div>
+    </header>
+    <div class="board-wrap">
+      <svg id="board" role="img" aria-label="퍼즐 판"></svg>
+    </div>
+    <p id="count" class="count"></p>
+    <div class="controls">
+      <button id="undo">되돌리기</button>
+      <button id="reset">처음부터</button>
+    </div>
+    <div id="win" class="win" hidden>
+      <div class="win-card">
+        <p class="win-title">완성!</p>
+        <p class="win-time" id="win-time"></p>
+        <button id="next" class="primary">다음 단계</button>
+        <button id="win-home">목록으로</button>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

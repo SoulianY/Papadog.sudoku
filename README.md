@@ -36,6 +36,29 @@ blocks/src/app.js      화면과 드래그 앤 드롭
 blocks/test/           규칙 테스트
 ```
 
+## 잇다 — 한붓 숫자 잇기 (`itda/`)
+
+▶ 플레이: https://souliany.github.io/Papadog.sudoku/itda/
+
+1에서 시작해 숫자를 순서대로 지나며 모든 칸을 한 번씩 채우고 마지막 숫자에서 끝내는 경로 퍼즐. 굵은 벽은 넘을 수 없습니다.
+
+- 500단계, 단계마다 난이도 무작위: 쉬움(5–6칸) · 보통(6–7칸, 벽) · 어려움(7–8칸, 벽 많고 단서 최소)
+- 모든 단계는 해가 하나뿐 (생성 시 솔버로 검증)
+- 끌어서 그리기, 지나온 칸을 되짚으면 되돌아감, 되돌리기·처음부터
+- 타이머, 단계별 최고 기록, 완료 표시 (localStorage)
+
+```
+itda/src/puzzle.js              규칙: 경로 연장·되돌리기·완성 판정
+itda/src/board.js               SVG 판 그리기, 포인터(터치) 입력
+itda/src/main.js                화면 전환, 타이머
+itda/src/storage.js             진행 저장
+itda/tools/generate-levels.mjs  백바이트 알고리즘으로 무작위 해밀턴 경로 → 해가 하나로 유지되는 한 단서 제거
+```
+
+```sh
+node itda/tools/generate-levels.mjs   # itda/levels.json 재생성 (고정 시드)
+```
+
 ## 휴대폰 앱으로 설치
 
 HTTPS 정적 호스팅(GitHub Pages, Netlify, Cloudflare Pages 등)에 올리면 PWA로 설치됩니다.
