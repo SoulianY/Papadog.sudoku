@@ -46,7 +46,9 @@ export class Puzzle {
 
   // Moves the path end toward `cell`: backtracks if it is on the path, otherwise extends
   // step by step along a straight line (pointer events can skip cells on fast drags).
+  // A solved path is locked so a finger drifting before lift-off can't erase it.
   moveTo(cell) {
+    if (this.solved) return false;
     const i = this.path.indexOf(cell);
     if (i !== -1) {
       if (i === this.path.length - 1) return false;
@@ -77,6 +79,6 @@ export class Puzzle {
   }
 
   undo() {
-    if (this.path.length > 1) this.path.pop();
+    if (!this.solved && this.path.length > 1) this.path.pop();
   }
 }

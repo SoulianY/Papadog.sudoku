@@ -94,7 +94,6 @@ function onBoardChange() {
 $('continue').addEventListener('click', () => openLevel(firstUnsolved()));
 $('back').addEventListener('click', () => { clearInterval(timerId); renderHome(); show('home'); });
 $('undo').addEventListener('click', () => {
-  if (puzzle.solved) return;
   puzzle.undo(); board.render(); updateCount();
 });
 $('reset').addEventListener('click', () => {
