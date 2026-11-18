@@ -7,8 +7,10 @@ import { minMoves } from '../src/solver.js';
 const levels = JSON.parse(readFileSync(new URL('../levels.json', import.meta.url)));
 const asPieces = (level) => level.pieces.map(([r, c, len, v]) => [r, c, len, Boolean(v)]);
 
-test('500 distinct levels, easiest first', () => {
+test('500 distinct levels, easiest first, from at least 15 moves to about 40', () => {
   assert.equal(levels.length, 500);
+  assert.ok(levels[0].moves >= 15);
+  assert.ok(levels.at(-1).moves >= 35);
   assert.equal(new Set(levels.map((l) => JSON.stringify(l.pieces))).size, 500);
   for (let i = 1; i < levels.length; i++) assert.ok(levels[i].moves >= levels[i - 1].moves, `level ${i + 1}`);
 });
