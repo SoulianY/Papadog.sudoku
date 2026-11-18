@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#16181d" media="(prefers-color-scheme: dark)">
+  <title>낙하</title>
+  <link rel="icon" href="../icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="src/app.js"></script>
+</head>
+<body>
+  <main class="game">
+    <header class="bar">
+      <a class="back" href="../" aria-label="게임 목록">‹</a>
+      <h1>낙하</h1>
+      <button class="pause-btn" aria-label="일시정지">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14M16 5v14"/></svg>
+      </button>
+    </header>
+    <section class="hud">
+      <button class="hold-box" aria-label="보관">
+        <span class="label">보관</span>
+        <canvas class="hold"></canvas>
+      </button>
+      <div class="stats">
+        <div><span class="label">점수</span><span class="score">0</span></div>
+        <div><span class="label">레벨</span><span class="level">1</span></div>
+        <div><span class="label">줄</span><span class="lines">0</span></div>
+      </div>
+      <div class="next-box">
+        <span class="label">다음</span>
+        <canvas class="next"></canvas>
+      </div>
+    </section>
+    <div class="field">
+      <canvas class="board"></canvas>
+    </div>
+  </main>
+
+  <dialog class="start">
+    <h2>낙하</h2>
+    <ul class="howto">
+      <li><b>탭</b> 회전</li>
+      <li><b>좌우로 끌기</b> 이동</li>
+      <li><b>아래로 끌기</b> 천천히 내리기</li>
+      <li><b>아래로 튕기기</b> 바로 놓기</li>
+      <li><b>위로 튕기기</b> 보관</li>
+      <li><b>보관 칸 탭</b> 보관</li>
+    </ul>
+    <p class="start-best"></p>
+    <button class="begin primary" autofocus>시작</button>
+  </dialog>
+  <dialog class="pause">
+    <h2>일시정지</h2>
+    <button class="continue primary" autofocus>계속</button>
+    <button class="restart">새 게임</button>
+  </dialog>
+  <dialog class="over">
+    <h2>게임 끝</h2>
+    <p class="final"></p>
+    <p class="final-best"></p>
+    <button class="again primary" autofocus>다시 하기</button>
+  </dialog>
+</body>
+</html>

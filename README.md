@@ -1,8 +1,19 @@
-# 스도쿠
+# 파파독 게임
 
-9×9 스도쿠 웹 게임. 초급·중급·상급·최상급 각 100판, 총 400판.
+▶ https://souliany.github.io/Papadog.sudoku/ — 게임 선택 화면
 
-▶ 플레이: https://souliany.github.io/Papadog.sudoku/
+| 게임 | 주소 | 폴더 |
+|---|---|---|
+| 스도쿠 | https://souliany.github.io/Papadog.sudoku/sudoku/ | `sudoku/` |
+| 블록 퍼즐 | https://souliany.github.io/Papadog.sudoku/blocks/ | `blocks/` |
+| 잇다 | https://souliany.github.io/Papadog.sudoku/itda/ | `itda/` |
+| 낙하 | https://souliany.github.io/Papadog.sudoku/drop/ | `drop/` |
+
+루트에는 게임 선택 화면(`index.html`, `hub.css`)과 공용 PWA 파일(`manifest.webmanifest`, `sw.js`, `icons/`)만 있습니다.
+
+## 스도쿠 (`sudoku/`)
+
+9×9 스도쿠. 초급·중급·상급·최상급 각 100판, 총 400판.
 
 ## 실행
 
@@ -14,7 +25,6 @@ npm start            # 또는: python3 -m http.server
 
 ## 블록 퍼즐 (`blocks/`)
 
-▶ 플레이: https://souliany.github.io/Papadog.sudoku/blocks/
 
 8×8 판에 아래 블록 3개를 끌어다 놓아 가로·세로 줄을 채우면 지워집니다. 놓을 곳이 없으면 게임 끝.
 
@@ -38,8 +48,6 @@ blocks/test/           규칙 테스트
 
 ## 잇다 — 한붓 숫자 잇기 (`itda/`)
 
-▶ 플레이: https://souliany.github.io/Papadog.sudoku/itda/
-
 1에서 시작해 숫자를 순서대로 지나며 모든 칸을 한 번씩 채우고 마지막 숫자에서 끝내는 경로 퍼즐. 굵은 벽은 넘을 수 없습니다.
 
 - 500단계, 단계마다 난이도 무작위: 쉬움(5–6칸) · 보통(6–7칸, 벽) · 어려움(7–8칸, 벽 많고 단서 최소)
@@ -59,6 +67,25 @@ itda/tools/generate-levels.mjs  백바이트 알고리즘으로 무작위 해밀
 node itda/tools/generate-levels.mjs   # itda/levels.json 재생성 (고정 시드)
 ```
 
+## 낙하 (`drop/`)
+
+10×20 판에 떨어지는 네 칸짜리 블록 7종을 쌓아 가로줄을 채우면 지워집니다. 블록이 나올 자리가 막히면 게임 끝.
+
+- 조작(휴대폰): 탭 회전 · 좌우로 끌기 이동 · 아래로 끌기 천천히 내리기 · 아래로 튕기기 바로 놓기 · 위로 튕기기 또는 보관 칸 탭 보관
+- 조작(키보드): ←→ 이동, ↓ 내리기, ↑/X 회전, Z 반대 회전, Space 바로 놓기, C/Shift 보관, P/Esc 일시정지
+- 7종을 한 묶음씩 섞어 내보내기(같은 블록 가뭄 없음), 다음 3개 미리보기, 착지 위치 미리보기, 보관(블록당 1번)
+- 점수: 1·2·3·4줄 = 100·300·500·800 × 레벨, 내리기 1칸 1점, 바로 놓기 1칸 2점. 10줄마다 레벨이 오르고 빨라짐
+- 바닥에 닿은 뒤 0.5초 안에 움직이면 고정이 미뤄짐(최대 15번). 앱이 가려지면 자동 일시정지. 최고 점수 저장
+
+```
+drop/src/pieces.js   블록 모양·회전, 7종 묶음 섞기
+drop/src/engine.js   규칙: 이동·회전(벽 밀어내기)·중력·고정·줄 지우기·점수
+drop/src/render.js   캔버스 그리기
+drop/src/input.js    터치 제스처·키보드
+drop/src/app.js      게임 루프, 화면
+drop/test/           규칙 테스트
+```
+
 ## 휴대폰 앱으로 설치
 
 HTTPS 정적 호스팅(GitHub Pages, Netlify, Cloudflare Pages 등)에 올리면 PWA로 설치됩니다.
@@ -68,7 +95,7 @@ HTTPS 정적 호스팅(GitHub Pages, Netlify, Cloudflare Pages 등)에 올리면
 
 한 번 열고 나면 오프라인에서도 플레이됩니다 (`sw.js`).
 
-## 기능
+## 스도쿠 기능
 
 - 난이도별 100판 목록, 완료(파란색)·진행 중(점) 표시
 - 메모(연필) 모드, 지우기, 실행취소, 힌트
@@ -78,9 +105,9 @@ HTTPS 정적 호스팅(GitHub Pages, Netlify, Cloudflare Pages 등)에 올리면
 - 키보드: `1-9` 입력, `Backspace`/`0` 지우기, `N` 메모, 방향키 이동, `Ctrl+Z` 실행취소
 - 라이트/다크 모드 자동
 
-## 퍼즐 난이도
+## 스도쿠 퍼즐 난이도
 
-`src/puzzles.js`는 [sudoku-core](https://github.com/komeilmehranfar/sudoku-core)로 생성합니다.
+`sudoku/src/puzzles.js`는 [sudoku-core](https://github.com/komeilmehranfar/sudoku-core)로 생성합니다.
 사람이 쓰는 풀이 기법 순서로 L1–L10 등급을 매기며, 각 퍼즐은 **풀기 위해 꼭 필요한 가장 어려운 기법**으로 등급이 정해집니다.
 
 | 단계 | 등급 | 필요한 기법 | 주어진 숫자 |
@@ -98,16 +125,15 @@ npm run generate     # 퍼즐 400판 새로 생성
 npm test             # 퍼즐 데이터 검증 (개수, 유일해, 정답, 난이도)
 ```
 
-## 구조
+## 스도쿠 구조
 
 ```
-index.html, styles.css
-manifest.webmanifest, sw.js, icons/   PWA 설치·오프라인
-src/app.js        화면·라우팅 (#easy, #easy-12)
-src/game.js       한 판의 상태: 입력, 메모, 실행취소, 힌트
-src/sudoku.js     보드 헬퍼 (행/열/박스, PEERS)
-src/storage.js    진행 저장
-src/puzzles.js    생성된 퍼즐 데이터
-scripts/generate-puzzles.mjs
-test/puzzles.test.mjs
+sudoku/index.html, sudoku/styles.css
+sudoku/src/app.js        화면·라우팅 (#easy, #easy-12)
+sudoku/src/game.js       한 판의 상태: 입력, 메모, 실행취소, 힌트
+sudoku/src/sudoku.js     보드 헬퍼 (행/열/박스, PEERS)
+sudoku/src/storage.js    진행 저장
+sudoku/src/puzzles.js    생성된 퍼즐 데이터
+sudoku/scripts/generate-puzzles.mjs
+sudoku/test/puzzles.test.mjs
 ```

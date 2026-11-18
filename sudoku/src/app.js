@@ -29,7 +29,7 @@ function route() {
 
 function showLevels() {
   app.innerHTML = `
-    <header class="bar"><h1>스도쿠</h1></header>
+    <header class="bar"><a class="back" href="../" aria-label="게임 목록">‹</a><h1>스도쿠</h1></header>
     <main class="levels">
       ${LEVELS.map(({ key, name }) => {
         const solved = progress.countSolved(PUZZLES[key]);
@@ -215,7 +215,7 @@ function showGame(level, index) {
 }
 
 // Some hosts (sandboxed previews) refuse service workers; the game works without one.
-navigator.serviceWorker?.register('sw.js').catch(() => {});
+navigator.serviceWorker?.register('../sw.js').catch(() => {});
 
 addEventListener('hashchange', route);
 document.addEventListener('visibilitychange', () => document.hidden && active?.save());

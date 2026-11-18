@@ -58,6 +58,7 @@ button.primary {
 }
 
 /* Home */
+.hub-link { color: var(--muted); text-decoration: none; font-size: 0.95rem; }
 .hero h1 {
   font-size: 3.2rem;
   margin: 8px 0 0;

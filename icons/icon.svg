@@ -1,13 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <rect width="512" height="512" fill="#2f5bd3"/>
-  <g fill="none" stroke="#fffdf8" stroke-linecap="round">
-    <rect x="106" y="106" width="300" height="300" rx="28" stroke-width="16"/>
-    <path d="M206 106v300M306 106v300M106 206h300M106 306h300" stroke-width="10"/>
-  </g>
-  <g fill="#fffdf8" font-family="system-ui, sans-serif" font-weight="700" font-size="64" text-anchor="middle">
-    <text x="156" y="179">5</text>
-    <text x="256" y="279">9</text>
-    <text x="356" y="379">3</text>
-    <text x="356" y="179">1</text>
-  </g>
+  <rect x="96" y="96" width="148" height="148" rx="30" fill="#fffdf8"/>
+  <path d="M145 96v148M195 96v148M96 145h148M96 195h148" stroke="#2f5bd3" stroke-width="8" opacity="0.35"/>
+  <rect x="268" y="96" width="148" height="148" rx="30" fill="#e4574f"/>
+  <rect x="268" y="96" width="70" height="70" rx="16" fill="#fffdf8" opacity="0.35"/>
+  <rect x="96" y="268" width="148" height="148" rx="30" fill="#e8c840"/>
+  <polyline points="132,304 208,304 208,380 132,380" fill="none" stroke="#1d2433" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="268" y="268" width="148" height="148" rx="30" fill="#4cae6e"/>
+  <rect x="306" y="296" width="72" height="34" rx="10" fill="#fffdf8" opacity="0.5"/>
+  <rect x="290" y="354" width="104" height="34" rx="10" fill="#fffdf8" opacity="0.5"/>
 </svg>

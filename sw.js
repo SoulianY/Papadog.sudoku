@@ -1,25 +1,27 @@
-// Offline support: precache the app, then network-first so updates show up on the next load.
-const CACHE = 'sudoku';
+// Offline support: precache the game list, then network-first so updates show up on the next load.
+// Each game's files are cached the first time it is opened.
+const CACHE = 'games';
 const FILES = [
   './',
   'index.html',
-  'styles.css',
+  'hub.css',
   'manifest.webmanifest',
   'icons/icon-192.png',
   'icons/icon-512.png',
   'icons/apple-touch-icon.png',
-  'src/app.js',
-  'src/game.js',
-  'src/puzzles.js',
-  'src/storage.js',
-  'src/sudoku.js',
 ];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)).then(() => self.skipWaiting()));
 });
 
-self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
+self.addEventListener('activate', (e) => {
+  e.waitUntil(
+    caches.keys()
+      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+      .then(() => self.clients.claim()),
+  );
+});
 
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET' || new URL(e.request.url).origin !== location.origin) return;

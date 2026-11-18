@@ -5,14 +5,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#16181d" media="(prefers-color-scheme: dark)">
-  <title>스도쿠</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="파파독 게임">
+  <title>파파독 게임</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css">
-  <script type="module" src="src/app.js"></script>
+  <link rel="stylesheet" href="hub.css">
 </head>
 <body>
-  <div id="app"></div>
+  <main>
+    <h1>파파독 게임</h1>
+    <nav class="games">
+      <a class="card" href="sudoku/">
+        <svg viewBox="0 0 48 48" aria-hidden="true">
+          <rect x="4" y="4" width="40" height="40" rx="6" class="frame"/>
+          <path d="M17.3 4v40M30.7 4v40M4 17.3h40M4 30.7h40" class="line"/>
+          <text x="10.6" y="15" class="digit">5</text><text x="37.4" y="28.4" class="digit">3</text><text x="24" y="41.8" class="digit accent">9</text>
+        </svg>
+        <span class="name">스도쿠</span>
+        <span class="desc">9×9 숫자 퍼즐 · 400판</span>
+      </a>
+      <a class="card" href="blocks/">
+        <svg viewBox="0 0 48 48" aria-hidden="true">
+          <rect x="6" y="6" width="11" height="11" rx="3" fill="#e4574f"/><rect x="18.5" y="6" width="11" height="11" rx="3" fill="#e4574f"/>
+          <rect x="6" y="18.5" width="11" height="11" rx="3" fill="#e4574f"/>
+          <rect x="18.5" y="31" width="11" height="11" rx="3" fill="#3a9bd6"/><rect x="31" y="31" width="11" height="11" rx="3" fill="#3a9bd6"/>
+          <rect x="31" y="18.5" width="11" height="11" rx="3" fill="#4cae6e"/>
+        </svg>
+        <span class="name">블록 퍼즐</span>
+        <span class="desc">블록을 놓아 줄 지우기</span>
+      </a>
+      <a class="card" href="itda/">
+        <svg viewBox="0 0 48 48" aria-hidden="true">
+          <polyline points="12,12 36,12 36,24 12,24 12,36 36,36" fill="none" stroke="#e2583e" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="12" cy="12" r="6" class="dot"/><circle cx="36" cy="36" r="6" class="dot"/>
+          <text x="12" y="14.6" class="num">1</text><text x="36" y="38.6" class="num">2</text>
+        </svg>
+        <span class="name">잇다</span>
+        <span class="desc">숫자 순서대로 한붓 잇기 · 500판</span>
+      </a>
+      <a class="card" href="drop/">
+        <svg viewBox="0 0 48 48" aria-hidden="true">
+          <rect x="18.5" y="4" width="11" height="11" rx="3" fill="#a45bd6"/>
+          <rect x="6" y="15.5" width="11" height="11" rx="3" fill="#a45bd6"/><rect x="18.5" y="15.5" width="11" height="11" rx="3" fill="#a45bd6"/><rect x="31" y="15.5" width="11" height="11" rx="3" fill="#a45bd6"/>
+          <rect x="6" y="33" width="11" height="11" rx="3" fill="#f0a032"/><rect x="18.5" y="33" width="11" height="11" rx="3" fill="#3a9bd6"/><rect x="31" y="33" width="11" height="11" rx="3" fill="#4cae6e"/>
+        </svg>
+        <span class="name">낙하</span>
+        <span class="desc">떨어지는 블록으로 줄 채우기</span>
+      </a>
+    </nav>
+  </main>
+  <script>navigator.serviceWorker?.register('sw.js').catch(() => {});</script>
 </body>
 </html>
