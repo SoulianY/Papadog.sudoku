@@ -45,8 +45,7 @@ button { font: inherit; color: inherit; cursor: pointer; touch-action: manipulat
   height: 100dvh;
   max-width: 520px;
   margin: 0 auto;
-  padding: env(safe-area-inset-top) calc(env(safe-area-inset-right) + 12px)
-    calc(env(safe-area-inset-bottom) + 12px) calc(env(safe-area-inset-left) + 12px);
+  padding: 0 12px 12px;
 }
 
 .bar { display: flex; align-items: center; justify-content: space-between; height: 56px; flex-shrink: 0; }
