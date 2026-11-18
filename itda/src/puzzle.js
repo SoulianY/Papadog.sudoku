@@ -45,7 +45,8 @@ export class Puzzle {
   }
 
   // Moves the path end toward `cell`: backtracks if it is on the path, otherwise extends
-  // step by step along a straight line (pointer events can skip cells on fast drags).
+  // step by step along a straight line (pointer events can skip cells on fast drags),
+  // or around the corner when a finger cuts diagonally past it.
   // A solved path is locked so a finger drifting before lift-off can't erase it.
   moveTo(cell) {
     if (this.solved) return false;
@@ -55,7 +56,7 @@ export class Puzzle {
       this.path.length = i + 1;
       return true;
     }
-    const steps = this.straightLine(this.head, cell);
+    const steps = this.straightLine(this.head, cell) ?? this.cornerRoute(cell);
     if (!steps) return false;
     let changed = false;
     for (const step of steps) {
@@ -76,6 +77,21 @@ export class Puzzle {
       steps.push(r * this.size + c);
       if (r === tr && c === tc) return steps;
     }
+  }
+
+  cornerRoute(cell) {
+    const { head, size } = this;
+    const hr = Math.floor(head / size), hc = head % size;
+    const tr = Math.floor(cell / size), tc = cell % size;
+    if (Math.abs(hr - tr) !== 1 || Math.abs(hc - tc) !== 1) return null;
+    for (const via of [hr * size + tc, tr * size + hc]) {
+      if (!this.canExtend(via)) continue;
+      this.path.push(via);
+      const ok = this.canExtend(cell);
+      this.path.pop();
+      if (ok) return [via, cell];
+    }
+    return null;
   }
 
   undo() {

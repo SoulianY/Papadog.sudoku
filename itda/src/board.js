@@ -2,6 +2,9 @@
 
 const NS = 'http://www.w3.org/2000/svg';
 const CELL = 100;
+// The path end stays selected until the finger is this fraction of a cell beyond its edges,
+// so wobbling across a grid line neither extends nor cuts the path.
+const HEAD_REACH = 0.3;
 
 function el(name, attrs = {}, parent) {
   const node = document.createElementNS(NS, name);
@@ -85,9 +88,18 @@ export class Board {
     return row * size + col;
   }
 
+  // True while the pointer is on the path end or within HEAD_REACH of it.
+  nearHead(e) {
+    const rect = this.svg.getBoundingClientRect();
+    const { size, head } = this.puzzle;
+    const x = ((e.clientX - rect.left) / rect.width) * size - (head % size);
+    const y = ((e.clientY - rect.top) / rect.height) * size - Math.floor(head / size);
+    return x > -HEAD_REACH && x < 1 + HEAD_REACH && y > -HEAD_REACH && y < 1 + HEAD_REACH;
+  }
+
   pointerDown(e) {
     if (!this.puzzle || this.puzzle.solved) return;
-    const cell = this.cellFromEvent(e);
+    const cell = this.nearHead(e) ? this.puzzle.head : this.cellFromEvent(e);
     if (cell === -1) return;
     const onPath = this.puzzle.path.includes(cell);
     if (!onPath && !this.puzzle.canExtend(cell)) return;
@@ -97,7 +109,7 @@ export class Board {
   }
 
   pointerMove(e) {
-    if (!this.dragging) return;
+    if (!this.dragging || this.nearHead(e)) return;
     const cell = this.cellFromEvent(e);
     if (cell !== -1) this.apply(cell);
   }
