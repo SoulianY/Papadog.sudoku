@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#16181d" media="(prefers-color-scheme: dark)">
+  <title>불 끄기</title>
+  <link rel="icon" href="../icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="src/main.js"></script>
+</head>
+<body>
+  <main id="home" hidden>
+    <header class="bar">
+      <a class="hub" href="../" aria-label="게임 목록">‹</a>
+      <h1>불 끄기</h1>
+      <span></span>
+    </header>
+    <p class="intro">칸을 누르면 그 칸과 위·아래·왼쪽·오른쪽 칸의 불이 바뀌어요. 모든 불을 끄세요.</p>
+    <div class="progress">
+      <div class="progress-bar"><span></span></div>
+      <span class="progress-text"></span>
+    </div>
+    <button class="continue primary"></button>
+    <div class="sections"></div>
+  </main>
+
+  <main id="play" hidden>
+    <header class="bar">
+      <button class="back" aria-label="단계 목록">‹</button>
+      <div class="title">
+        <h1 class="stage-title"></h1>
+        <span class="stage-sub"></span>
+      </div>
+      <span></span>
+    </header>
+    <section class="status">
+      <div><span class="label">누른 횟수</span><span class="moves">0</span></div>
+      <div><span class="label">켜진 불</span><span class="lit">0</span></div>
+    </section>
+    <div class="board"></div>
+    <div class="controls">
+      <button class="hint-btn">힌트</button>
+      <button class="reset">처음부터</button>
+    </div>
+    <div class="win" hidden>
+      <div class="win-card">
+        <h2>모두 껐어요!</h2>
+        <p class="win-moves"></p>
+        <p class="win-note"></p>
+        <button class="next primary">다음 단계</button>
+        <button class="again">다시 하기</button>
+        <button class="to-list">단계 목록</button>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

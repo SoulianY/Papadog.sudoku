@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#16181d" media="(prefers-color-scheme: dark)">
+  <title>숫자야구</title>
+  <link rel="icon" href="../icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="src/main.js"></script>
+</head>
+<body>
+  <main>
+    <header class="bar">
+      <a class="hub" href="../" aria-label="게임 목록">‹</a>
+      <h1>숫자야구</h1>
+      <button class="restart" aria-label="새 게임">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+      </button>
+    </header>
+    <nav class="mode" aria-label="자릿수">
+      <button data-length="3">3자리</button>
+      <button data-length="4">4자리</button>
+    </nav>
+    <p class="help">1~9 중 서로 다른 숫자. 자리까지 맞으면 <b class="s">S</b>, 숫자만 맞으면 <b class="b">B</b>, 하나도 없으면 <b class="o">OUT</b></p>
+    <div class="info"><span class="tries"></span><span class="stats"></span></div>
+    <ol class="history"></ol>
+    <div class="memo" aria-label="메모: 눌러서 ✕ 없음, ○ 있음 표시">
+      <span class="memo-label">메모</span>
+      <button data-digit="1">1</button><button data-digit="2">2</button><button data-digit="3">3</button>
+      <button data-digit="4">4</button><button data-digit="5">5</button><button data-digit="6">6</button>
+      <button data-digit="7">7</button><button data-digit="8">8</button><button data-digit="9">9</button>
+    </div>
+    <div class="slots"></div>
+    <div class="pad">
+      <button data-digit="1">1</button><button data-digit="2">2</button><button data-digit="3">3</button>
+      <button data-digit="4">4</button><button data-digit="5">5</button><button data-digit="6">6</button>
+      <button data-digit="7">7</button><button data-digit="8">8</button><button data-digit="9">9</button>
+      <button class="erase">지우기</button><button class="submit">확인</button>
+    </div>
+    <div class="result" hidden>
+      <div class="card">
+        <h2 class="result-title"></h2>
+        <p class="result-text"></p>
+        <button class="again primary">새 게임</button>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

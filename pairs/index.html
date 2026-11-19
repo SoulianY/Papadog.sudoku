@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#16181d" media="(prefers-color-scheme: dark)">
+  <title>짝 맞추기</title>
+  <link rel="icon" href="../icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="src/main.js"></script>
+</head>
+<body>
+  <main id="home" hidden>
+    <header class="bar">
+      <a class="hub" href="../" aria-label="게임 목록">‹</a>
+      <h1>짝 맞추기</h1>
+      <span></span>
+    </header>
+    <p class="intro">카드를 두 장씩 뒤집어 같은 그림을 찾으세요. 적게 뒤집을수록 좋아요.</p>
+    <div class="progress">
+      <div class="progress-bar"><span></span></div>
+      <span class="progress-text"></span>
+    </div>
+    <button class="continue primary"></button>
+    <p class="legend"><span class="sw done"></span>완료 <span class="sw perfect"></span>한 번도 안 틀림</p>
+    <div class="sections"></div>
+  </main>
+
+  <main id="play" hidden>
+    <header class="bar">
+      <button class="back" aria-label="단계 목록">‹</button>
+      <div class="title">
+        <h1 class="stage-title"></h1>
+        <span class="stage-sub"></span>
+      </div>
+      <button class="reset" aria-label="다시 섞기">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+      </button>
+    </header>
+    <section class="status">
+      <div><span class="label">뒤집은 횟수</span><span class="moves">0</span></div>
+      <div><span class="label">시간</span><span class="timer">0:00</span></div>
+    </section>
+    <div class="cards"></div>
+    <div class="win" hidden>
+      <div class="win-card">
+        <h2>다 찾았어요!</h2>
+        <p class="win-moves"></p>
+        <p class="win-note"></p>
+        <button class="next primary">다음 단계</button>
+        <button class="again">다시 하기</button>
+        <button class="to-list">단계 목록</button>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

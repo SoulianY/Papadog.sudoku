@@ -61,4 +61,7 @@ h1 { margin: 0 0 20px; font-size: 28px; letter-spacing: -0.03em; }
 .digit.on { fill: #fff; }
 .lot { fill: none; stroke: var(--ink); stroke-width: 2.5; }
 .gap { stroke: var(--surface); stroke-width: 4; }
+.off { fill: var(--line); }
+.bridge { fill: none; stroke: var(--ink); stroke-width: 2.5; }
+.isle { fill: var(--surface); stroke: var(--ink); stroke-width: 2; }
 .num { fill: var(--bg); font-size: 8px; font-weight: 800; text-anchor: middle; }

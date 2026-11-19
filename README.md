@@ -10,6 +10,10 @@
 | 낙하 | https://souliany.github.io/Papadog.sudoku/drop/ | `drop/` |
 | 차례 | https://souliany.github.io/Papadog.sudoku/charye/ | `charye/` |
 | 출차 | https://souliany.github.io/Papadog.sudoku/chulcha/ | `chulcha/` |
+| 숫자야구 | https://souliany.github.io/Papadog.sudoku/baseball/ | `baseball/` |
+| 불 끄기 | https://souliany.github.io/Papadog.sudoku/lights/ | `lights/` |
+| 다리 놓기 | https://souliany.github.io/Papadog.sudoku/bridges/ | `bridges/` |
+| 짝 맞추기 | https://souliany.github.io/Papadog.sudoku/pairs/ | `pairs/` |
 
 루트에는 게임 선택 화면(`index.html`, `hub.css`)과 공용 PWA 파일(`manifest.webmanifest`, `sw.js`, `icons/`)만 있습니다.
 
@@ -122,6 +126,46 @@ chulcha/test/           퍼즐 검증 (500판, 겹침 없음, 최소 수 일치,
 
 ```sh
 node chulcha/tools/generate-levels.mjs 20   # chulcha/levels.json 재생성 (코어당 20분 탐색)
+```
+
+## 숫자야구 (`baseball/`)
+
+1–9 중 서로 다른 숫자로 된 비밀 수를 10번 안에 맞히기. 자리까지 맞으면 S, 숫자만 맞으면 B, 하나도 없으면 OUT.
+
+- 3자리·4자리 모드, 모드별 승/판 수와 최소 시도 저장
+- 화면 숫자판으로 입력, 이미 고른 숫자는 비활성. 1–9 메모 줄을 누르면 ✕(없음) → ○(있음) → 표시 없음
+
+## 불 끄기 (`lights/`)
+
+칸을 누르면 그 칸과 상하좌우 칸의 불이 바뀜. 모든 불을 끄면 성공.
+
+- 300단계: 4×4부터 8×8까지 크기마다 60단계. 꺼진 판에서 무작위로 몇 칸을 눌러 섞기 때문에 항상 풀 수 있고, 섞는 횟수가 크기 안에서 점점 늘어남. 판은 단계 번호로 정해져 어느 기기에서나 같음
+- 최소 몇 번에 끌 수 있는지 GF(2) 연립방정식으로 계산(4×4·5×5처럼 해가 여럿이면 가장 짧은 것). 같은 계산으로 힌트 제공
+
+## 다리 놓기 (`bridges/`)
+
+섬의 숫자만큼 가로·세로 다리를 놓기. 두 섬 사이 최대 2개, 다리끼리 엇갈림 금지, 모든 섬이 하나로 이어져야 함.
+
+- 300단계: 7×7부터 10×10까지 크기마다 75단계, 크기 안에서 섬 수가 늘어남. 모든 판은 해가 하나뿐
+- 섬에서 옆 섬 쪽으로 끌거나 두 섬 사이를 누르면 다리가 0 → 1 → 2 → 0. 엇갈리는 다리는 막힘. 숫자를 채운 섬은 파란색, 넘치면 빨간색. 되돌리기·처음부터
+- 퍼즐 생성 (`bridges/tools/generate-levels.mjs`): 섬을 하나씩 뻗어가며 다리로 이어 정답을 먼저 만들고, 남는 자리에 다리를 더해 고리를 만든 뒤 숫자를 정함. 풀이기로 해가 하나인 것만 남김
+
+## 짝 맞추기 (`pairs/`)
+
+카드를 두 장씩 뒤집어 같은 그림 찾기.
+
+- 70단계: 카드 6·12·16·20·24·30·36장, 10단계씩. 단계마다 그림 묶음(동물·과일·음식·운동·탈것·자연·물건)이 바뀜. 배치는 매번 무작위
+- 틀린 두 장은 잠시 뒤 닫히고, 그 사이 다른 카드를 누르면 바로 닫힘. 뒤집은 횟수·시간, 단계별 최소 횟수 저장. 한 번도 안 틀리면 금색 표시
+
+```
+baseball/src/game.js    비밀 수, 스트라이크·볼 판정, 시도 횟수
+lights/src/lights.js    누르기, 최소 풀이 계산
+lights/src/stages.js    단계 → 크기·섞는 횟수·판
+bridges/src/bridges.js  다리 후보·엇갈림·완성 판정
+bridges/src/solver.js   해 개수 세기
+pairs/src/game.js       카드 뒤집기·짝 판정
+pairs/src/stages.js     단계 → 카드 수·그림 묶음
+*/test/                 각 게임 규칙 테스트
 ```
 
 ## 휴대폰 앱으로 설치
