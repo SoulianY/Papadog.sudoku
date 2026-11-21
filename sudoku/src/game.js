@@ -1,16 +1,18 @@
 // Game state for one puzzle: entries, pencil notes, undo history. No DOM.
-import { PEERS, parse } from './sudoku.js';
+import { parse } from './shape.js';
 
 export class Game {
+  #shape;
   #givens;
   #answer;
   #history = [];
 
-  constructor(puzzle, solution, save) {
+  constructor(shape, puzzle, solution, save) {
+    this.#shape = shape;
     this.#givens = parse(puzzle);
     this.#answer = parse(solution);
     this.values = save ? [...save.values] : [...this.#givens];
-    this.notes = save ? [...save.notes] : Array(81).fill(0); // bit d set = note d
+    this.notes = save ? [...save.notes] : Array(shape.count).fill(0); // bit d set = note d
     this.elapsed = save?.elapsed ?? 0;
   }
 
@@ -24,7 +26,7 @@ export class Game {
 
   /** How many of digit d are still to be placed correctly. */
   remaining(d) {
-    return 9 - this.values.filter((v, i) => v === d && v === this.#answer[i]).length;
+    return this.#shape.size - this.values.filter((v, i) => v === d && v === this.#answer[i]).length;
   }
 
   get canUndo() {
@@ -36,7 +38,7 @@ export class Game {
     this.#record();
     this.values[i] = d;
     this.notes[i] = 0;
-    if (d === this.#answer[i]) for (const j of PEERS[i]) this.notes[j] &= ~(1 << d);
+    if (d === this.#answer[i]) for (const j of this.#shape.peers[i]) this.notes[j] &= ~(1 << d);
   }
 
   toggleNote(i, d) {

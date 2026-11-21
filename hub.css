@@ -53,6 +53,7 @@ h1 { margin: 0 0 20px; font-size: 28px; letter-spacing: -0.03em; }
 
 .frame { fill: none; stroke: var(--ink); stroke-width: 2.5; }
 .line { stroke: var(--line); stroke-width: 1.5; }
+.frame-line { stroke: var(--ink); stroke-width: 2; }
 .digit { fill: var(--ink); font-size: 10px; font-weight: 700; text-anchor: middle; }
 .digit.accent { fill: var(--accent); }
 .dot { fill: var(--ink); }

@@ -4,6 +4,8 @@
 
 | 게임 | 주소 | 폴더 |
 |---|---|---|
+| 스도쿠 6×6 | https://souliany.github.io/Papadog.sudoku/sudoku6/ | `sudoku6/` |
+| 스도쿠 (쉬움) | https://souliany.github.io/Papadog.sudoku/sudoku-easy/ | `sudoku-easy/` |
 | 스도쿠 | https://souliany.github.io/Papadog.sudoku/sudoku/ | `sudoku/` |
 | 블록 퍼즐 | https://souliany.github.io/Papadog.sudoku/blocks/ | `blocks/` |
 | 잇다 | https://souliany.github.io/Papadog.sudoku/itda/ | `itda/` |
@@ -17,9 +19,23 @@
 
 루트에는 게임 선택 화면(`index.html`, `hub.css`)과 공용 PWA 파일(`manifest.webmanifest`, `sw.js`, `icons/`)만 있습니다.
 
-## 스도쿠 (`sudoku/`)
+## 스도쿠 3종 (`sudoku6/`, `sudoku-easy/`, `sudoku/`)
 
-9×9 스도쿠. 초급·중급·상급·최상급 각 100판, 총 400판.
+세 게임이 `sudoku/src/`의 엔진 하나를 같이 씀. 게임 폴더에는 퍼즐 데이터(`puzzles.js`)와 설정 한 줄(`main.js`: 제목, 상자 모양, 레벨 목록)만 있음. 기록은 퍼즐 문자열로 저장돼 세 게임이 섞이지 않음.
+
+| 게임 | 판 | 레벨 | 난이도 |
+|---|---|---|---|
+| 스도쿠 6×6 | 6×6 (2×3 상자) | 레벨 1–5, 100판씩 | 주어진 숫자 22개 → 10개로 점점 줄어듦. 싱글(네이키드·히든)만으로 풀림 |
+| 스도쿠 (쉬움) | 9×9 | 레벨 2 334판 · 레벨 3 333판 · 레벨 4 333판 | sudoku-core L2(히든 싱글)·L3(네이키드 싱글)·L4(포인팅) |
+| 스도쿠 | 9×9 | 초급·중급·상급·최상급 100판씩 | 아래 표 |
+
+```sh
+node sudoku/scripts/generate-puzzles.mjs classic   # sudoku/puzzles.js (기존 400판, 같은 시드라 그대로 재현됨)
+node sudoku/scripts/generate-puzzles.mjs easy      # sudoku-easy/puzzles.js (1000판, 기존 400판과 겹치지 않는 시드)
+node sudoku/scripts/generate-six.mjs               # sudoku6/puzzles.js (500판)
+```
+
+6×6 생성: 무작위로 채운 판에서 해가 하나로 유지되는 한 숫자를 지우고, 목표 개수까지 지운 숫자를 다시 채움(숫자를 더해도 해는 하나로 유지됨). 싱글만으로 풀리는 판만 남김.
 
 ## 실행
 
@@ -189,7 +205,7 @@ HTTPS 정적 호스팅(GitHub Pages, Netlify, Cloudflare Pages 등)에 올리면
 
 ## 스도쿠 퍼즐 난이도
 
-`sudoku/src/puzzles.js`는 [sudoku-core](https://github.com/komeilmehranfar/sudoku-core)로 생성합니다.
+`sudoku/puzzles.js`는 [sudoku-core](https://github.com/komeilmehranfar/sudoku-core)로 생성합니다.
 사람이 쓰는 풀이 기법 순서로 L1–L10 등급을 매기며, 각 퍼즐은 **풀기 위해 꼭 필요한 가장 어려운 기법**으로 등급이 정해집니다.
 
 | 단계 | 등급 | 필요한 기법 | 주어진 숫자 |
@@ -203,19 +219,20 @@ HTTPS 정적 호스팅(GitHub Pages, Netlify, Cloudflare Pages 등)에 올리면
 단계 안에서는 낮은 등급 → 높은 등급, 같은 등급은 풀이 작업량(score) 순이라 1번이 가장 쉽고 100번이 가장 어렵습니다.
 
 ```sh
-npm run generate     # 퍼즐 400판 새로 생성
 npm test             # 퍼즐 데이터 검증 (개수, 유일해, 정답, 난이도)
 ```
 
 ## 스도쿠 구조
 
 ```
-sudoku/index.html, sudoku/styles.css
-sudoku/src/app.js        화면·라우팅 (#easy, #easy-12)
-sudoku/src/game.js       한 판의 상태: 입력, 메모, 실행취소, 힌트
-sudoku/src/sudoku.js     보드 헬퍼 (행/열/박스, PEERS)
-sudoku/src/storage.js    진행 저장
-sudoku/src/puzzles.js    생성된 퍼즐 데이터
-sudoku/scripts/generate-puzzles.mjs
-sudoku/test/puzzles.test.mjs
+sudoku/styles.css            세 게임 공용 스타일
+sudoku/src/app.js            화면·라우팅 (#레벨, #레벨-12), startSudoku(설정)
+sudoku/src/game.js           한 판의 상태: 입력, 메모, 실행취소, 힌트
+sudoku/src/shape.js          판 모양 (6×6·9×9 행/열/상자, 이웃 칸)
+sudoku/src/storage.js        진행 저장
+sudoku/puzzles.js            스도쿠 400판
+sudoku-easy/puzzles.js       스도쿠 (쉬움) 1000판
+sudoku6/puzzles.js           스도쿠 6×6 500판
+sudoku/scripts/              퍼즐 생성기
+sudoku/test/, sudoku6/test/  퍼즐 검증
 ```

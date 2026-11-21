@@ -4,7 +4,6 @@
   "type": "module",
   "scripts": {
     "start": "npx --yes serve .",
-    "generate": "node sudoku/scripts/generate-puzzles.mjs",
     "test": "node --test"
   },
   "devDependencies": {
