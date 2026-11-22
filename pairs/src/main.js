@@ -5,7 +5,7 @@ import { loadBest, saveBest } from './storage.js';
 const $ = (sel) => document.querySelector(sel);
 const MISS_DELAY = 800;
 const best = loadBest();
-let stage = 1, info, board, startedAt = 0, timerId = 0, missTimer = 0;
+let stage = 1, info, board, startedAt = 0, timerId = 0, missTimer = 0, previewTimer = 0, peeking = false;
 
 const firstOpen = () => { let s = 1; while (s < TOTAL && best[s] !== undefined) s++; return s; };
 const formatTime = (ms) => `${Math.floor(ms / 60000)}:${String(Math.floor(ms / 1000) % 60).padStart(2, '0')}`;
@@ -42,6 +42,7 @@ function openStage(s) {
   board = new Board(info.pairs);
   clearInterval(timerId);
   clearTimeout(missTimer);
+  clearTimeout(previewTimer);
   startedAt = 0;
   $('.stage-title').textContent = `${s}단계`;
   $('.stage-sub').textContent = `카드 ${info.pairs * 2}장${best[s] !== undefined ? ` · 최소 ${best[s]}번` : ''}`;
@@ -57,6 +58,19 @@ function openStage(s) {
     b.innerHTML = `<span class="back"></span><span class="face">${info.symbols[card.id]}</span>`;
     return b;
   }));
+  // Show every card face up for a moment, then turn them over and start.
+  peeking = true;
+  const bar = $('.preview');
+  bar.hidden = false;
+  bar.style.setProperty('--ms', `${info.preview}ms`);
+  bar.classList.remove('run');
+  void bar.offsetWidth; // restart the countdown animation
+  bar.classList.add('run');
+  previewTimer = setTimeout(() => {
+    peeking = false;
+    bar.hidden = true;
+    render();
+  }, info.preview);
   render();
   show('play');
 }
@@ -64,7 +78,7 @@ function openStage(s) {
 function render() {
   for (const b of $('.cards').children) {
     const card = board.cards[b.dataset.index];
-    b.classList.toggle('open', card.open);
+    b.classList.toggle('open', card.open || peeking);
     b.classList.toggle('matched', card.matched);
   }
   $('.moves').textContent = board.moves;
@@ -72,7 +86,7 @@ function render() {
 
 $('.cards').addEventListener('click', (e) => {
   const b = e.target.closest('.card');
-  if (!b || board.done) return;
+  if (!b || board.done || peeking) return;
   clearTimeout(missTimer);
   const result = board.flip(Number(b.dataset.index));
   if (result === 'ignored') return;
@@ -103,7 +117,7 @@ function win() {
 
 $('.reset').addEventListener('click', () => openStage(stage));
 $('.continue').addEventListener('click', () => openStage(firstOpen()));
-$('.back').addEventListener('click', () => { clearInterval(timerId); renderHome(); show('home'); });
+$('.back').addEventListener('click', () => { clearInterval(timerId); clearTimeout(previewTimer); renderHome(); show('home'); });
 $('.next').addEventListener('click', () => openStage(stage + 1));
 $('.again').addEventListener('click', () => openStage(stage));
 $('.to-list').addEventListener('click', () => $('.back').click());

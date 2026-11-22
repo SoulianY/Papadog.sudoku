@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { Board } from '../src/game.js';
-import { stageInfo, SETS, TOTAL } from '../src/stages.js';
+import { stageInfo, previewMs, SETS, TOTAL } from '../src/stages.js';
 
 const seeded = (seed = 1) => () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
 const partnerOf = (b, i) => b.cards.findIndex((c, k) => k !== i && c.id === b.cards[i].id);
@@ -45,10 +45,22 @@ test('opening every pair finishes the board', () => {
   assert.equal(b.moves, 6);
 });
 
-test('stages grow from 6 to 36 cards and every set has enough distinct pictures', () => {
-  assert.equal(TOTAL, 70);
+test('50 stages per card count, from 6 cards to 36, and every set has enough distinct pictures', () => {
+  assert.equal(TOTAL, 350);
   assert.equal(stageInfo(1).pairs, 3);
-  assert.equal(stageInfo(70).pairs, 18);
+  assert.equal(stageInfo(50).pairs, 3);
+  assert.equal(stageInfo(51).pairs, 6);
+  assert.equal(stageInfo(350).pairs, 18);
   for (const set of SETS) assert.equal(new Set(set).size, 18);
   for (let s = 1; s <= TOTAL; s++) assert.equal(new Set(stageInfo(s).symbols).size, stageInfo(s).pairs);
+});
+
+test('cards are shown for 1 s with 6 cards, growing to 3 s with 36', () => {
+  assert.equal(previewMs(6), 1000);
+  assert.equal(previewMs(36), 3000);
+  const steps = [6, 12, 16, 20, 24, 30, 36].map(previewMs);
+  for (let i = 1; i < steps.length; i++) assert.ok(steps[i] > steps[i - 1]);
+  assert.deepEqual(steps, [1000, 1400, 1700, 1900, 2200, 2600, 3000]);
+  assert.equal(stageInfo(1).preview, 1000);
+  assert.equal(stageInfo(350).preview, 3000);
 });
