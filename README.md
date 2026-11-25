@@ -16,6 +16,8 @@
 | 불 끄기 | https://souliany.github.io/Papadog.sudoku/lights/ | `lights/` |
 | 다리 놓기 | https://souliany.github.io/Papadog.sudoku/bridges/ | `bridges/` |
 | 짝 맞추기 | https://souliany.github.io/Papadog.sudoku/pairs/ | `pairs/` |
+| 하노이의 탑 | https://souliany.github.io/Papadog.sudoku/hanoi/ | `hanoi/` |
+| 파이프 잇기 | https://souliany.github.io/Papadog.sudoku/pipes/ | `pipes/` |
 
 루트에는 게임 선택 화면(`index.html`, `hub.css`)과 공용 PWA 파일(`manifest.webmanifest`, `sw.js`, `icons/`)만 있습니다.
 
@@ -183,6 +185,29 @@ bridges/src/solver.js   해 개수 세기
 pairs/src/game.js       카드 뒤집기·짝 판정
 pairs/src/stages.js     단계 → 카드 수·그림 묶음·미리 보기 시간
 */test/                 각 게임 규칙 테스트
+```
+
+## 하노이의 탑 (`hanoi/`)
+
+기둥 3개. 원판을 옮겨 목표 모양과 똑같이 만들기. 한 번에 맨 위 원판 하나만, 작은 원판 위에 큰 원판은 못 올림.
+
+- 500단계: 판마다 시작 배치와 목표 배치가 다름(원판 수마다 문제가 하나뿐인 원래 규칙의 변형)
+- 원판 3개(1–60) → 4개(61–140) → 5개(141–240) → 6개(241–360) → 7개(361–500). 최소 이동 횟수도 2수 → 90수로 늘어남
+- 기둥을 눌러 원판을 들고 옮길 기둥을 누름. 목표 모양을 위에 작게 표시. 되돌리기·처음부터, 최소 수로 풀면 금색
+- 퍼즐 생성 (`hanoi/tools/generate-levels.mjs`): 무작위 목표 배치에서 모든 배치까지의 최소 이동 횟수를 너비 우선 탐색으로 구하고(3ⁿ가지), 단계마다 목표 횟수만큼 떨어진 배치를 시작으로 고름
+
+## 파이프 잇기 (`pipes/`)
+
+칸을 눌러 파이프를 시계 방향으로 돌려, 가운데 수원에서 물이 모든 파이프로 새는 곳 없이 흐르게 잇기.
+
+- 500단계: 4×4(1–40) → 5×5 → 6×6 → 7×7 → 8×8 → 9×9 → 10×10(421–500)
+- 정답 연결망은 모든 칸을 잇는 무작위 트리(윌슨 알고리즘), 칸마다 무작위로 돌려 섞음. 판은 단계 번호로 정해져 어느 기기에서나 같음
+- 물이 닿은 파이프는 파란색으로 바로 표시. 돌린 횟수 기록
+
+```
+hanoi/src/hanoi.js     원판 이동 규칙, 최소 이동 횟수 탐색
+pipes/src/pipes.js     파이프 모양·회전, 무작위 트리, 물 흐름·완성 판정
+pipes/src/stages.js    단계 → 판 크기·판
 ```
 
 ## 휴대폰 앱으로 설치

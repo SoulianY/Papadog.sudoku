@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#16181d" media="(prefers-color-scheme: dark)">
+  <title>하노이의 탑</title>
+  <link rel="icon" href="../icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="src/main.js"></script>
+</head>
+<body>
+  <main id="home" hidden>
+    <header class="bar">
+      <a class="hub" href="../" aria-label="게임 목록">‹</a>
+      <h1>하노이의 탑</h1>
+      <span></span>
+    </header>
+    <ul class="intro">
+      <li>원판을 옮겨 위의 <b>목표</b> 모양과 똑같이 만드세요.</li>
+      <li>한 번에 맨 위 원판 하나만, 작은 원판 위에 큰 원판은 못 올려요.</li>
+      <li>기둥을 눌러 원판을 들고, 옮길 기둥을 누르세요.</li>
+    </ul>
+    <div class="progress">
+      <div class="progress-bar"><span></span></div>
+      <span class="progress-text"></span>
+    </div>
+    <button class="continue primary"></button>
+    <p class="legend"><span class="sw done"></span>완료 <span class="sw perfect"></span>최소 수로 완료</p>
+    <div class="sections"></div>
+  </main>
+
+  <main id="play" hidden>
+    <header class="bar">
+      <button class="back" aria-label="단계 목록">‹</button>
+      <div class="title">
+        <h1 class="stage-title"></h1>
+        <span class="stage-sub"></span>
+      </div>
+      <span></span>
+    </header>
+    <p class="label">목표</p>
+    <div class="target pegs-row" aria-label="목표 모양"></div>
+    <p class="count"><span class="moves">0</span>수</p>
+    <div class="pegs pegs-row"></div>
+    <div class="controls">
+      <button class="undo">되돌리기</button>
+      <button class="reset">처음부터</button>
+    </div>
+    <div class="win" hidden>
+      <div class="win-card">
+        <h2>완성!</h2>
+        <p class="win-moves"></p>
+        <p class="win-note"></p>
+        <button class="next primary">다음 단계</button>
+        <button class="again">다시 하기</button>
+        <button class="to-list">단계 목록</button>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
