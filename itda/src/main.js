@@ -26,10 +26,16 @@ function formatTime(ms) {
   return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
 }
 
+const inFilter = (i) => filter === 'all' || levels[i].difficulty === filter;
+
+// First unsolved level among those the difficulty filter shows.
 function firstUnsolved() {
-  const i = levels.findIndex((_, idx) => progress[idx] === undefined);
-  return i === -1 ? 0 : i;
+  const shown = levels.map((_, i) => i).filter(inFilter);
+  return shown.find((i) => progress[i] === undefined) ?? shown[0];
 }
+
+// The level after `current` that the difficulty filter shows, or -1.
+const nextInFilter = () => levels.findIndex((_, i) => i > current && inFilter(i));
 
 function renderHome() {
   const solvedCount = Object.keys(progress).length;
@@ -40,7 +46,7 @@ function renderHome() {
   const list = $('level-list');
   list.replaceChildren();
   levels.forEach((level, i) => {
-    if (filter !== 'all' && level.difficulty !== filter) return;
+    if (!inFilter(i)) return;
     const btn = document.createElement('button');
     btn.className = `level ${level.difficulty}`;
     if (progress[i] !== undefined) btn.classList.add('done');
@@ -87,7 +93,7 @@ function onBoardChange() {
   recordSolve(progress, current, ms);
   navigator.vibrate?.(60);
   $('win-time').textContent = formatTime(ms);
-  $('next').hidden = current >= levels.length - 1;
+  $('next').hidden = nextInFilter() === -1;
   setTimeout(() => { $('win').hidden = false; }, 350);
 }
 
@@ -100,7 +106,7 @@ $('reset').addEventListener('click', () => {
   if (puzzle.solved) return;
   puzzle.reset(); board.render(); updateCount();
 });
-$('next').addEventListener('click', () => openLevel(current + 1));
+$('next').addEventListener('click', () => openLevel(nextInFilter()));
 $('win-home').addEventListener('click', () => $('back').click());
 $('filters').addEventListener('click', (e) => {
   const btn = e.target.closest('button[data-filter]');
