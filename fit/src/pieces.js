@@ -1,4 +1,5 @@
-// The piece set: ten polyominoes from 2 to 5 cells. Shapes are lists of [row, col].
+// The piece set: polyominoes from 2 to 5 cells. Shapes are lists of [row, col].
+// `hard` marks the irregular five-cell pieces that are awkward to fit; every die face includes some.
 export const PIECES = [
   { id: 'i2', cells: [[0, 0], [0, 1]] },
   { id: 'i3', cells: [[0, 0], [0, 1], [0, 2]] },
@@ -10,6 +11,13 @@ export const PIECES = [
   { id: 'i4', cells: [[0, 0], [0, 1], [0, 2], [0, 3]] },
   { id: 'p5', cells: [[0, 0], [0, 1], [1, 0], [1, 1], [2, 0]] },
   { id: 'u5', cells: [[0, 0], [0, 2], [1, 0], [1, 1], [1, 2]] },
+  { id: 'f5', hard: true, cells: [[0, 1], [0, 2], [1, 0], [1, 1], [2, 1]] },
+  { id: 'n5', hard: true, cells: [[0, 0], [0, 1], [1, 1], [1, 2], [1, 3]] },
+  { id: 'w5', hard: true, cells: [[0, 0], [1, 0], [1, 1], [2, 1], [2, 2]] },
+  { id: 'y5', hard: true, cells: [[0, 1], [1, 0], [1, 1], [1, 2], [1, 3]] },
+  { id: 'z5', hard: true, cells: [[0, 0], [0, 1], [1, 1], [2, 1], [2, 2]] },
+  { id: 'v5', hard: true, cells: [[0, 0], [1, 0], [2, 0], [2, 1], [2, 2]] },
+  { id: 'l5', hard: true, cells: [[0, 0], [1, 0], [1, 1], [1, 2], [1, 3]] },
 ];
 export const byId = Object.fromEntries(PIECES.map((p) => [p.id, p]));
 

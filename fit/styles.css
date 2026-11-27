@@ -13,6 +13,7 @@
   --alarm: #e0533d;
   --i2: #d9412f; --i3: #ee8a22; --l3: #f2c230; --o4: #3e9b4f; --t4: #2f7bc4;
   --s4: #4a55b5; --l4: #8a4fb8; --i4: #d9558a; --p5: #2a9c93; --u5: #9a6b3f;
+  --f5: #8fbf3a; --n5: #49b6d6; --w5: #f07b5a; --y5: #c2449a; --z5: #b07d2b; --v5: #2f4f8f; --l5: #6c7a3a;
   --display: "Black Han Sans", system-ui, sans-serif;
   color-scheme: dark;
 }
@@ -154,6 +155,8 @@ main { max-width: 560px; margin: 0 auto; padding: 0 14px 12px; }
 .piece.placed span { box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.4), inset 0 -4px 0 rgba(0, 0, 0, 0.25); }
 .p-i2 { --fill: var(--i2); } .p-i3 { --fill: var(--i3); } .p-l3 { --fill: var(--l3); } .p-o4 { --fill: var(--o4); } .p-t4 { --fill: var(--t4); }
 .p-s4 { --fill: var(--s4); } .p-l4 { --fill: var(--l4); } .p-i4 { --fill: var(--i4); } .p-p5 { --fill: var(--p5); } .p-u5 { --fill: var(--u5); }
+.p-f5 { --fill: var(--f5); } .p-n5 { --fill: var(--n5); } .p-w5 { --fill: var(--w5); } .p-y5 { --fill: var(--y5); }
+.p-z5 { --fill: var(--z5); } .p-v5 { --fill: var(--v5); } .p-l5 { --fill: var(--l5); }
 
 /* ---------- result ---------- */
 .result { position: fixed; inset: 0; display: grid; place-items: end center; padding: 20px; background: rgba(10, 30, 24, 0.45); z-index: 5; }

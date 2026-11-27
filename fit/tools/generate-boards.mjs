@@ -8,7 +8,8 @@ import { writeFileSync } from 'node:fs';
 import { PIECES, byId, orientations } from '../src/pieces.js';
 import { tile } from '../src/solver.js';
 
-const MODES = { easy: { pieces: 3, cards: 100, maxW: 5, maxH: 4 }, hard: { pieces: 4, cards: 200, maxW: 6, maxH: 5 } };
+// minHard: every die face uses at least this many of the irregular five-cell pieces.
+const MODES = { easy: { pieces: 3, cards: 100, maxW: 5, maxH: 4, minHard: 1 }, hard: { pieces: 4, cards: 200, maxW: 6, maxH: 5, minHard: 2 } };
 let seed = 20261127;
 const rng = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
 const randInt = (n) => Math.floor(rng() * n);
@@ -65,8 +66,9 @@ function grow(ids, maxW, maxH) {
 
 const ids = PIECES.map((p) => p.id);
 const out = {};
-for (const [mode, { pieces, cards, maxW, maxH }] of Object.entries(MODES)) {
-  const combos = combinations(ids, pieces);
+const hardCount = (combo) => combo.filter((id) => byId[id].hard).length;
+for (const [mode, { pieces, cards, maxW, maxH, minHard }] of Object.entries(MODES)) {
+  const combos = combinations(ids, pieces).filter((c) => hardCount(c) >= minHard);
   const list = [];
   const seen = new Set();
   let tried = 0;
