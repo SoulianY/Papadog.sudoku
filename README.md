@@ -18,6 +18,7 @@
 | 짝 맞추기 | https://souliany.github.io/Papadog.sudoku/pairs/ | `pairs/` |
 | 하노이의 탑 | https://souliany.github.io/Papadog.sudoku/hanoi/ | `hanoi/` |
 | 파이프 잇기 | https://souliany.github.io/Papadog.sudoku/pipes/ | `pipes/` |
+| 딱맞춤 | https://souliany.github.io/Papadog.sudoku/fit/ | `fit/` |
 
 루트에는 게임 선택 화면(`index.html`, `hub.css`)과 공용 PWA 파일(`manifest.webmanifest`, `sw.js`, `icons/`)만 있습니다.
 
@@ -208,6 +209,22 @@ pairs/src/stages.js     단계 → 카드 수·그림 묶음·미리 보기 시�
 hanoi/src/hanoi.js     원판 이동 규칙, 최소 이동 횟수 탐색
 pipes/src/pipes.js     파이프 모양·회전, 무작위 트리, 물 흐름·완성 판정
 pipes/src/stages.js    단계 → 판 크기·판
+```
+
+## 딱맞춤 (`fit/`)
+
+판 카드를 뽑고 주사위를 굴리면 나온 눈의 조각들이 주어지고, 모래시계 30초 안에 조각으로 판을 빈틈없이 채우기.
+
+- 초급(조각 3개)·상급(조각 4개), 모드별 판 카드 300장. 판마다 무작위로 뽑음
+- 조작: 끌어다 놓으면 겹치지 않고 들어가는 가장 가까운 자리(1.6칸 이내)에 맞춰짐, 없으면 보관 칸으로 돌아감. 한 번 누르면 시계 방향 90° 회전, 두 번 빠르게 누르면 뒤집기(첫 회전은 취소). 판 위에서 돌리면 중심을 기준으로 다시 맞춤
+- 실패(시간 끝·포기)하면 정답 배치를 보여줌. 모드별 성공·실패 판 수, 성공한 판의 평균 시간 저장. 앱이 가려진 동안은 시간이 흐르지 않음
+- 조각 10종(2–5칸 폴리오미노). 판 카드 생성 (`fit/tools/generate-boards.mjs`): 조각을 무작위로 돌려 변끼리 붙여 판 모양을 만들고(구멍 있는 판은 버림), 같은 개수의 모든 조각 조합 중 판을 정확히 채우는 것을 풀이기로 찾아 6개 이상이면 그중 6개를 주사위 눈 1–6에 배정. 각 눈마다 정답 배치를 함께 저장
+
+```
+fit/src/pieces.js     조각 모양, 회전·뒤집기, 방향 목록
+fit/src/solver.js     판을 조각으로 정확히 채우기 (빈 칸 순서대로 채우는 탐색)
+fit/src/main.js       주사위, 모래시계, 끌어 놓기·맞추기, 기록
+fit/test/             조각·풀이기·판 카드 검증
 ```
 
 ## 휴대폰 앱으로 설치
