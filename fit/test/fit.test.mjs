@@ -26,27 +26,21 @@ test('the solver fills a board exactly, or reports that it cannot', () => {
   assert.ok(tile(['0,0', '0,1', '0,2', '0,3', '0,4'], ['i2', 'i3']));
 });
 
-for (const [mode, size, count, minHard] of [['easy', 3, 100, 1], ['hard', 4, 200, 2]]) {
-  test(`${mode}: ${count} different cards, six different fitting piece sets each`, () => {
+for (const [mode, size, count, minHard] of [['easy', 3, 1000, 1], ['hard', 4, 2000, 1]]) {
+  test(`${mode}: ${count} different cards, six different piece sets each, every one fills its board`, () => {
     const list = cards[mode];
     assert.equal(list.length, count);
     assert.equal(new Set(list.map((c) => c.board.slice().sort().join())).size, count);
     for (const [n, { board, faces }] of list.entries()) {
       assert.equal(faces.length, 6);
-      assert.equal(new Set(faces.map((f) => f.pieces.join())).size, 6, `card ${n} faces differ`);
-      const boardSet = new Set(board);
-      for (const { pieces, solution } of faces) {
+      assert.equal(new Set(faces.map((f) => f.join())).size, 6, `card ${n} faces differ`);
+      const keys = board.map((k) => unpack(k).join(','));
+      for (const pieces of faces) {
         assert.equal(pieces.length, size);
         assert.ok(pieces.filter((id) => byId[id].hard).length >= minHard, `card ${n} uses hard pieces`);
-        assert.deepEqual(solution.map((s) => s.id).sort(), pieces.slice().sort());
-        const covered = solution.flatMap((s) => s.cells);
-        assert.equal(covered.length, board.length, `card ${n} area`);
-        assert.equal(new Set(covered).size, covered.length, `card ${n} overlap`);
-        assert.ok(covered.every((k) => boardSet.has(k)), `card ${n} inside`);
-        for (const { id, cells } of solution) {
-          const shape = JSON.stringify(normalize(cells.map(unpack)));
-          assert.ok(orientations(byId[id].cells).some((o) => JSON.stringify(o) === shape), `card ${n} ${id} shape`);
-        }
+        const solution = tile(keys, pieces);
+        assert.ok(solution, `card ${n} ${pieces} fills the board`);
+        assert.equal(new Set(solution.flatMap((s) => s.cells.map(([r, c]) => `${r},${c}`))).size, board.length);
       }
     }
   });

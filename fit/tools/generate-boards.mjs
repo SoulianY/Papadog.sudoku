@@ -1,5 +1,6 @@
 // Generates boards.json: board cards for each mode. A card is a board shape plus six piece sets
 // (one per die face), each a different combination of pieces that fills the board exactly.
+// Solutions are not stored; the game solves a face again when it needs to show the answer.
 // A board is grown by joining randomly turned pieces edge to edge; the other five sets are found
 // by trying every combination of the same size and keeping those the solver can fit.
 // Cells in the file are row × 10 + column.
@@ -9,7 +10,7 @@ import { PIECES, byId, orientations } from '../src/pieces.js';
 import { tile } from '../src/solver.js';
 
 // minHard: every die face uses at least this many of the irregular five-cell pieces.
-const MODES = { easy: { pieces: 3, cards: 100, maxW: 5, maxH: 4, minHard: 1 }, hard: { pieces: 4, cards: 200, maxW: 6, maxH: 5, minHard: 2 } };
+const MODES = { easy: { pieces: 3, cards: 1000, maxW: 5, maxH: 4, minHard: 1 }, hard: { pieces: 4, cards: 2000, maxW: 6, maxH: 5, minHard: 1 } };
 let seed = 20261127;
 const rng = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
 const randInt = (n) => Math.floor(rng() * n);
@@ -65,6 +66,7 @@ function grow(ids, maxW, maxH) {
 }
 
 const ids = PIECES.map((p) => p.id);
+const t0 = Date.now();
 const out = {};
 const hardCount = (combo) => combo.filter((id) => byId[id].hard).length;
 for (const [mode, { pieces, cards, maxW, maxH, minHard }] of Object.entries(MODES)) {
@@ -82,8 +84,7 @@ for (const [mode, { pieces, cards, maxW, maxH, minHard }] of Object.entries(MODE
     const sets = [];
     for (const combo of combos) {
       if (combo.reduce((s, id) => s + byId[id].cells.length, 0) !== area) continue;
-      const solution = tile(board, combo);
-      if (solution) sets.push({ pieces: combo, solution });
+      if (tile(board, combo)) sets.push({ pieces: combo });
     }
     if (sets.length < 6) continue;
     seen.add(key);
@@ -91,12 +92,9 @@ for (const [mode, { pieces, cards, maxW, maxH, minHard }] of Object.entries(MODE
     for (let i = sets.length - 1; i > 0; i--) { const j = randInt(i + 1); [sets[i], sets[j]] = [sets[j], sets[i]]; }
     // Cells are stored as row × 10 + column to keep the file small.
     const pack = ([r, c]) => r * 10 + c;
-    list.push({
-      board: board.map((k) => pack(k.split(',').map(Number))),
-      faces: sets.slice(0, 6).map(({ pieces: p, solution }) => ({ pieces: p, solution: solution.map(({ id, cells }) => ({ id, cells: cells.map(pack) })) })),
-    });
+    list.push({ board: board.map((k) => pack(k.split(',').map(Number))), faces: sets.slice(0, 6).map((f) => f.pieces) });
   }
   out[mode] = list;
-  console.log(`${mode}: ${list.length} cards from ${tried} tries`);
+  console.log(`${mode}: ${list.length} cards from ${tried} tries, ${((Date.now() - t0) / 1000).toFixed(0)}s`);
 }
 writeFileSync(new URL('../boards.json', import.meta.url), JSON.stringify(out));

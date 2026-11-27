@@ -1,4 +1,5 @@
 import { byId, rotate, flip, normalize } from './pieces.js';
+import { tile } from './solver.js';
 import { loadStats, saveStats } from './storage.js';
 
 const $ = (sel) => document.querySelector(sel);
@@ -59,7 +60,7 @@ function newRound() {
   rows = Math.max(...board.map(([r]) => r)) + 1;
   cols = Math.max(...board.map(([, c]) => c)) + 1;
   face = 1 + randInt(6);
-  pieces = card.faces[face - 1].pieces.map((id, slot) => ({ id, shape: normalize(byId[id].cells), at: null, slot }));
+  pieces = card.faces[face - 1].map((id, slot) => ({ id, shape: normalize(byId[id].cells), at: null, slot }));
   setTime(0);
   buildArea();
   rollDie();
@@ -123,10 +124,9 @@ function finish(success, failTitle) {
   renderStats();
   $('.give-up').disabled = true;
   if (!success) {
-    // Show the answer: every piece moves to its place in the stored solution.
-    for (const { id, cells } of card.faces[face - 1].solution) {
+    // Show the answer: solve this face and move every piece to its place.
+    for (const { id, cells: pts } of tile(board.map(([r, c]) => `${r},${c}`), card.faces[face - 1])) {
       const p = pieces.find((x) => x.id === id);
-      const pts = cells.map(unpack);
       const r0 = Math.min(...pts.map(([r]) => r)), c0 = Math.min(...pts.map(([, c]) => c));
       p.shape = normalize(pts);
       p.at = [r0, c0];
