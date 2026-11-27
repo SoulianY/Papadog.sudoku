@@ -3,11 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <meta name="theme-color" content="#f6f3ec" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#16181d" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#164638">
   <title>딱맞춤</title>
   <link rel="icon" href="../icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap">
   <link rel="stylesheet" href="styles.css">
   <script type="module" src="src/main.js"></script>
 </head>
@@ -15,23 +17,30 @@
   <main id="home" hidden>
     <header class="bar">
       <a class="hub" href="../" aria-label="게임 목록">‹</a>
-      <h1>딱맞춤</h1>
+      <span></span>
       <span></span>
     </header>
-    <ul class="intro">
-      <li>판을 뽑고 주사위를 굴리면, 나온 눈의 조각들이 주어져요.</li>
-      <li>모래시계 <b>30초</b> 안에 조각으로 판을 빈틈없이 채우세요.</li>
-      <li>조각을 끌어다 놓으면 가장 가까운 자리에 맞춰져요.</li>
-      <li><b>한 번 누르면</b> 시계 방향으로 90° 회전, <b>두 번 빠르게 누르면</b> 뒤집기.</li>
-    </ul>
-    <button class="mode-card" data-mode="easy">
-      <span class="mode-name">초급</span><span class="mode-desc">조각 3개</span>
-      <span class="mode-stats"></span>
-    </button>
-    <button class="mode-card" data-mode="hard">
-      <span class="mode-name">상급</span><span class="mode-desc">조각 4개</span>
-      <span class="mode-stats"></span>
-    </button>
+    <h1 class="logo">딱맞춤</h1>
+    <p class="lead">주사위가 정한 조각으로, 모래가 다 떨어지기 전에 판을 빈틈없이 채우세요.</p>
+    <div class="modes">
+      <button class="mode-card" data-mode="easy">
+        <span class="mode-art" aria-hidden="true"><i class="p-o4"></i><i class="p-i3"></i><i class="p-l3"></i></span>
+        <span class="mode-name">초급</span>
+        <span class="mode-desc">조각 3개로 채우는 판 100장</span>
+        <span class="mode-stats"></span>
+      </button>
+      <button class="mode-card" data-mode="hard">
+        <span class="mode-art" aria-hidden="true"><i class="p-p5"></i><i class="p-t4"></i><i class="p-s4"></i><i class="p-i2"></i></span>
+        <span class="mode-name">상급</span>
+        <span class="mode-desc">조각 4개로 채우는 판 200장</span>
+        <span class="mode-stats"></span>
+      </button>
+    </div>
+    <dl class="howto">
+      <div><dt>끌어 놓기</dt><dd>가장 가까운 빈자리에 맞춰져요</dd></div>
+      <div><dt>한 번 누르기</dt><dd>시계 방향으로 90° 회전</dd></div>
+      <div><dt>두 번 누르기</dt><dd>뒤집기</dd></div>
+    </dl>
   </main>
 
   <main id="play" hidden>
@@ -44,16 +53,19 @@
       <button class="give-up">포기</button>
     </header>
     <section class="status">
-      <svg class="hourglass" viewBox="0 0 40 64" aria-hidden="true">
-        <defs><clipPath id="glass"><path d="M8 6h24c0 12-9 18-10 26c1 8 10 14 10 26H8c0-12 9-18 10-26C17 24 8 18 8 6z"/></clipPath></defs>
-        <g clip-path="url(#glass)">
-          <rect class="sand-top" x="0" y="6" width="40" height="26"/>
-          <rect class="sand-bottom" x="0" y="58" width="40" height="0"/>
-        </g>
-        <path class="glass" d="M8 6h24c0 12-9 18-10 26c1 8 10 14 10 26H8c0-12 9-18 10-26C17 24 8 18 8 6z"/>
-        <path class="caps" d="M5 4h30M5 60h30"/>
-      </svg>
-      <span class="seconds">30</span>
+      <div class="clock">
+        <svg class="hourglass" viewBox="0 0 40 64" aria-hidden="true">
+          <defs><clipPath id="glass"><path d="M8 6h24c0 12-9 18-10 26c1 8 10 14 10 26H8c0-12 9-18 10-26C17 24 8 18 8 6z"/></clipPath></defs>
+          <g clip-path="url(#glass)">
+            <rect class="sand-top" x="0" y="6" width="40" height="26"/>
+            <rect class="sand-bottom" x="0" y="58" width="40" height="0"/>
+          </g>
+          <path class="glass" d="M8 6h24c0 12-9 18-10 26c1 8 10 14 10 26H8c0-12 9-18 10-26C17 24 8 18 8 6z"/>
+          <path class="caps" d="M4 4h32M4 60h32"/>
+        </svg>
+        <div class="timebar" role="timer" aria-label="남은 시간"><span></span></div>
+        <span class="seconds">30</span>
+      </div>
       <div class="die" aria-label="주사위"></div>
     </section>
     <div class="area"></div>

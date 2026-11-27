@@ -8,7 +8,7 @@ import { writeFileSync } from 'node:fs';
 import { PIECES, byId, orientations } from '../src/pieces.js';
 import { tile } from '../src/solver.js';
 
-const MODES = { easy: { pieces: 3, cards: 300, maxW: 5, maxH: 4 }, hard: { pieces: 4, cards: 300, maxW: 6, maxH: 5 } };
+const MODES = { easy: { pieces: 3, cards: 100, maxW: 5, maxH: 4 }, hard: { pieces: 4, cards: 200, maxW: 6, maxH: 5 } };
 let seed = 20261127;
 const rng = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
 const randInt = (n) => Math.floor(rng() * n);

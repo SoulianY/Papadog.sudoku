@@ -26,11 +26,11 @@ test('the solver fills a board exactly, or reports that it cannot', () => {
   assert.ok(tile(['0,0', '0,1', '0,2', '0,3', '0,4'], ['i2', 'i3']));
 });
 
-for (const [mode, size] of [['easy', 3], ['hard', 4]]) {
-  test(`${mode}: 300 different cards, six different fitting piece sets each`, () => {
+for (const [mode, size, count] of [['easy', 3, 100], ['hard', 4, 200]]) {
+  test(`${mode}: ${count} different cards, six different fitting piece sets each`, () => {
     const list = cards[mode];
-    assert.equal(list.length, 300);
-    assert.equal(new Set(list.map((c) => c.board.slice().sort().join())).size, 300);
+    assert.equal(list.length, count);
+    assert.equal(new Set(list.map((c) => c.board.slice().sort().join())).size, count);
     for (const [n, { board, faces }] of list.entries()) {
       assert.equal(faces.length, 6);
       assert.equal(new Set(faces.map((f) => f.pieces.join())).size, 6, `card ${n} faces differ`);

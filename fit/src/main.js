@@ -14,7 +14,7 @@ const stats = loadStats();
 
 let mode = 'easy';
 let card, face, pieces = [], board = [], boardSet = new Set(), rows = 0, cols = 0;
-let S = 36, boardLeft = 0, trayTop = 0;
+let S = 36, boardLeft = 0, boardTop = 0, trayTop = 0;
 let running = false, startedAt = 0, frame = 0, rollTimer = 0;
 let drag = null, lastTap = null, hiddenAt = 0;
 
@@ -31,16 +31,17 @@ function statText(m) {
   return { won: s.won, lost: s.lost, avg };
 }
 
+const statHtml = (m) => {
+  const { won, lost, avg } = statText(m);
+  return `<b>${won}</b>승 <b>${lost}</b>패 <span>평균 <b>${avg}</b></span>`;
+};
+
 function renderHome() {
-  for (const m of Object.keys(MODES)) {
-    const { won, lost, avg } = statText(m);
-    $(`.mode-card[data-mode="${m}"] .mode-stats`).innerHTML = `성공 <b>${won}</b> · 실패 <b>${lost}</b> · 평균 <b>${avg}</b>`;
-  }
+  for (const m of Object.keys(MODES)) $(`.mode-card[data-mode="${m}"] .mode-stats`).innerHTML = statHtml(m);
 }
 
 function renderStats() {
-  const { won, lost, avg } = statText(mode);
-  $('.play-stats').innerHTML = `성공 <b>${won}</b> · 실패 <b>${lost}</b> · 평균 <b>${avg}</b>`;
+  $('.play-stats').innerHTML = statHtml(mode);
 }
 
 // ---------- round ----------
@@ -59,8 +60,7 @@ function newRound() {
   cols = Math.max(...board.map(([, c]) => c)) + 1;
   face = 1 + randInt(6);
   pieces = card.faces[face - 1].pieces.map((id, slot) => ({ id, shape: normalize(byId[id].cells), at: null, slot }));
-  setHourglass(0);
-  $('.seconds').textContent = '30';
+  setTime(0);
   buildArea();
   rollDie();
 }
@@ -92,8 +92,13 @@ function drawDie(n) {
   }));
 }
 
-// Sand runs from the top bulb (y 6–32) into the bottom one (y 32–58); the glass shape clips it.
-function setHourglass(frac) {
+// The time bar drains and the hourglass sand runs down together; the last 10 seconds turn red.
+function setTime(frac) {
+  const left = Math.max(0, LIMIT * (1 - frac));
+  $('.timebar span').style.transform = `scaleX(${1 - frac})`;
+  $('.seconds').textContent = Math.ceil(left / 1000);
+  $('.clock').classList.toggle('low', left <= 10000 && frac > 0);
+  // Sand runs from the top bulb (y 6–32) into the bottom one (y 32–58); the glass shape clips it.
   $('.sand-top').setAttribute('y', 6 + 26 * frac);
   $('.sand-top').setAttribute('height', 26 * (1 - frac));
   $('.sand-bottom').setAttribute('y', 58 - 26 * frac);
@@ -103,8 +108,7 @@ function setHourglass(frac) {
 function tick() {
   if (!running) return;
   const elapsed = performance.now() - startedAt;
-  setHourglass(Math.min(1, elapsed / LIMIT));
-  $('.seconds').textContent = Math.max(0, Math.ceil((LIMIT - elapsed) / 1000));
+  setTime(Math.min(1, elapsed / LIMIT));
   if (elapsed >= LIMIT) return finish(false, '시간 끝');
   frame = requestAnimationFrame(tick);
 }
@@ -143,6 +147,9 @@ function finish(success, failTitle) {
 function buildArea() {
   const area = $('.area');
   area.replaceChildren();
+  const frame = document.createElement('div');
+  frame.className = 'frame';
+  area.appendChild(frame);
   for (const [r, c] of board) {
     const cell = document.createElement('div');
     cell.className = 'slot';
@@ -165,17 +172,22 @@ function measure() {
   const area = $('.area');
   const width = area.clientWidth;
   const height = window.innerHeight - area.getBoundingClientRect().top - 12;
-  S = Math.floor(Math.min(width / (SLOT * 2 + 1), height / (rows + 1 + SLOT * 2), 52));
+  S = Math.floor(Math.min(width / (SLOT * 2 + 1), height / (rows + 1.6 + SLOT * 2), 52));
   boardLeft = Math.round((width - cols * S) / 2);
-  trayTop = (rows + 1) * S;
+  boardTop = Math.round(S * 0.4); // room for the wooden frame around the board
+  trayTop = boardTop + (rows + 1) * S;
   area.style.height = `${trayTop + SLOT * 2 * S}px`;
   return width;
 }
 
 function layout() {
   const width = measure();
+  const pad = Math.round(S * 0.3);
+  Object.assign($('.frame').style, {
+    left: `${boardLeft - pad}px`, top: `${boardTop - pad}px`, width: `${cols * S + 2 * pad}px`, height: `${rows * S + 2 * pad}px`,
+  });
   for (const el of $('.area').querySelectorAll('.slot')) {
-    Object.assign(el.style, { left: `${boardLeft + el.dataset.c * S}px`, top: `${el.dataset.r * S}px`, width: `${S}px`, height: `${S}px` });
+    Object.assign(el.style, { left: `${boardLeft + el.dataset.c * S}px`, top: `${boardTop + el.dataset.r * S}px`, width: `${S}px`, height: `${S}px` });
   }
   for (const p of pieces) {
     const [h, w] = size(p.shape);
@@ -191,7 +203,7 @@ function layout() {
     let x, y;
     if (p.at) {
       x = boardLeft + p.at[1] * S;
-      y = p.at[0] * S;
+      y = boardTop + p.at[0] * S;
     } else {
       const half = width / 2;
       x = (p.slot % 2) * half + (half - w * S) / 2;
@@ -278,7 +290,7 @@ function endDrag(e) {
   const { p, el, moved } = drag;
   el.classList.remove('lifted');
   if (moved && running) {
-    p.at = snap(p, p.shape, el.offsetTop / S, (el.offsetLeft - boardLeft) / S);
+    p.at = snap(p, p.shape, (el.offsetTop - boardTop) / S, (el.offsetLeft - boardLeft) / S);
     lastTap = null;
   }
   drag = null;
@@ -294,7 +306,7 @@ $('.area').addEventListener('pointercancel', endDrag);
 for (const btn of document.querySelectorAll('.mode-card')) {
   btn.addEventListener('click', () => {
     mode = btn.dataset.mode;
-    $('.play-title').textContent = `${MODES[mode].name} · 조각 ${MODES[mode].pieces}개`;
+    $('.play-title').textContent = `딱맞춤 ${MODES[mode].name}`;
     renderStats();
     show('play');
     newRound();
