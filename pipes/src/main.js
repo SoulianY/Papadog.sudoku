@@ -35,8 +35,7 @@ function renderHome() {
 }
 
 // The pipe is drawn in its solved orientation and the tile is rotated on screen, so turning animates.
-// Each arm is drawn three times: the copper pipe, the water inside it, and a ripple that runs along
-// the water; the last two show once water arrives.
+// Each arm is drawn twice: the pipe (copper, blue once water arrives) and a ripple that runs along it.
 function pipeSvg(mask, i) {
   const arms = SIDES.filter((s) => mask & s.bit)
     .map((s) => `<line x1="50" y1="50" x2="${50 + s.dc * 50}" y2="${50 + s.dr * 50}"/>`).join('');
@@ -44,7 +43,7 @@ function pipeSvg(mask, i) {
   const knob = i === board.source
     ? '<circle class="source" cx="50" cy="50" r="26"/><circle class="valve" cx="50" cy="50" r="10"/>'
     : ends === 1 ? '<circle class="end" cx="50" cy="50" r="17"/>' : '<circle class="joint" cx="50" cy="50" r="13"/>';
-  return `<svg viewBox="0 0 100 100" aria-hidden="true"><g class="pipe">${arms}</g><g class="water">${arms}</g><g class="ripple">${arms}</g>${knob}</svg>`;
+  return `<svg viewBox="0 0 100 100" aria-hidden="true"><g class="pipe">${arms}</g><g class="ripple">${arms}</g>${knob}</svg>`;
 }
 
 function openStage(s) {
