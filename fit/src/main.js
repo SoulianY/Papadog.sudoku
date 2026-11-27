@@ -29,13 +29,16 @@ function show(id) {
 
 function statText(m) {
   const s = stats[m] ?? { won: 0, lost: 0, totalMs: 0 };
+  const played = s.won + s.lost;
+  const rate = played ? `${Math.round((s.won / played) * 100)}%` : '-';
   const avg = s.won ? `${(s.totalMs / s.won / 1000).toFixed(1)}초` : '-';
-  return { won: s.won, lost: s.lost, avg };
+  return { won: s.won, lost: s.lost, rate, avg };
 }
 
 const statHtml = (m) => {
-  const { won, lost, avg } = statText(m);
-  return `<b>${won}</b>승 <b>${lost}</b>패 <span>평균 <b>${avg}</b></span>`;
+  const { won, lost, rate, avg } = statText(m);
+  // Each item stays on one line; a narrow screen wraps between items, never inside one.
+  return `<span><b>${won}</b>승 <b>${lost}</b>패</span> <span>승률 <b>${rate}</b></span> <span>평균 <b>${avg}</b></span>`;
 };
 
 function renderHome() {
