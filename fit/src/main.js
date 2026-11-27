@@ -6,8 +6,9 @@ const cards = await (await fetch('boards.json')).json();
 const MODES = { easy: { name: '초급', pieces: 3 }, hard: { name: '상급', pieces: 4 } };
 const LIMIT = 30000;
 const SNAP = 1.6; // a drop snaps to a free spot at most this many cells away
-const DOUBLE_TAP = 300;
+const LONG_PRESS = 450; // holding a piece this long (ms) without moving flips it
 const SLOT = 4; // tray slots are 4×4 cells, two per row
+const TRAY_SCALE = 0.6; // pieces wait in the tray at this size and grow to full size when picked up
 const PIPS = { 1: [4], 2: [0, 8], 3: [0, 4, 8], 4: [0, 2, 6, 8], 5: [0, 2, 4, 6, 8], 6: [0, 2, 3, 5, 6, 8] };
 const unpack = (n) => [Math.floor(n / 10), n % 10];
 const stats = loadStats();
@@ -16,7 +17,7 @@ let mode = 'easy';
 let card, face, pieces = [], board = [], boardSet = new Set(), rows = 0, cols = 0;
 let S = 36, boardLeft = 0, boardTop = 0, trayTop = 0;
 let running = false, startedAt = 0, frame = 0, rollTimer = 0;
-let drag = null, lastTap = null, hiddenAt = 0;
+let drag = null, hiddenAt = 0;
 
 const size = (shape) => [Math.max(...shape.map(([r]) => r)) + 1, Math.max(...shape.map(([, c]) => c)) + 1];
 const randInt = (n) => Math.floor(Math.random() * n);
@@ -50,7 +51,6 @@ function newRound() {
   cancelAnimationFrame(frame);
   clearInterval(rollTimer);
   running = false;
-  lastTap = null;
   $('.result').hidden = true;
   $('.give-up').disabled = true;
   card = cards[mode][randInt(cards[mode].length)];
@@ -167,16 +167,17 @@ function buildArea() {
   layout();
 }
 
-// Cell size fits the board plus two rows of tray slots into the width and the height left on screen.
+// The board takes as much of the width as the height allows, with two rows of (smaller) tray slots below.
 function measure() {
   const area = $('.area');
   const width = area.clientWidth;
   const height = window.innerHeight - area.getBoundingClientRect().top - 12;
-  S = Math.floor(Math.min(width / (SLOT * 2 + 1), height / (rows + 1.6 + SLOT * 2), 52));
+  const tray = SLOT * TRAY_SCALE * 2;
+  S = Math.floor(Math.min(width / (cols + 0.8), height / (rows + 1.4 + tray), 64));
   boardLeft = Math.round((width - cols * S) / 2);
   boardTop = Math.round(S * 0.4); // room for the wooden frame around the board
   trayTop = boardTop + (rows + 1) * S;
-  area.style.height = `${trayTop + SLOT * 2 * S}px`;
+  area.style.height = `${trayTop + tray * S}px`;
   return width;
 }
 
@@ -205,13 +206,15 @@ function layout() {
       x = boardLeft + p.at[1] * S;
       y = boardTop + p.at[0] * S;
     } else {
-      const half = width / 2;
-      x = (p.slot % 2) * half + (half - w * S) / 2;
-      y = trayTop + Math.floor(p.slot / 2) * SLOT * S + ((SLOT - h) * S) / 2;
+      const half = width / 2, k = TRAY_SCALE;
+      x = (p.slot % 2) * half + (half - w * S * k) / 2;
+      y = trayTop + Math.floor(p.slot / 2) * SLOT * S * k + ((SLOT - h) * S * k) / 2;
     }
     el.style.left = `${x}px`;
     el.style.top = `${y}px`;
+    el.style.setProperty('--k', TRAY_SCALE);
     el.classList.toggle('placed', Boolean(p.at));
+    el.classList.toggle('small', !p.at);
   }
 }
 
@@ -245,19 +248,11 @@ function reseat(p, oldShape, oldAt) {
   p.at = snap(p, p.shape, oldAt[0] + (oh - nh) / 2, oldAt[1] + (ow - nw) / 2);
 }
 
-function tap(p) {
-  const now = performance.now();
-  if (lastTap?.p === p && now - lastTap.t < DOUBLE_TAP) {
-    // Second tap: undo the turn the first tap made and flip instead.
-    p.shape = flip(lastTap.shape);
-    p.at = lastTap.at;
-    reseat(p, lastTap.shape, lastTap.at);
-    lastTap = null;
-  } else {
-    lastTap = { p, t: now, shape: p.shape, at: p.at };
-    p.shape = rotate(p.shape);
-    reseat(p, lastTap.shape, lastTap.at);
-  }
+// A tap turns the piece; a long press flips it.
+function reshape(p, change) {
+  const old = p.shape;
+  p.shape = change(old);
+  reseat(p, old, p.at);
   layout();
   checkDone();
 }
@@ -271,7 +266,21 @@ $('.area').addEventListener('pointerdown', (e) => {
   if (!el || !running || drag) return;
   const p = pieces[el.dataset.k];
   el.setPointerCapture(e.pointerId);
-  drag = { p, el, id: e.pointerId, x0: e.clientX, y0: e.clientY, left: el.offsetLeft, top: el.offsetTop, moved: false };
+  // A piece in the tray grows to full size under the finger, keeping the touched spot under it.
+  const area = $('.area').getBoundingClientRect();
+  const k = p.at ? 1 : TRAY_SCALE;
+  const ax = e.clientX - area.left, ay = e.clientY - area.top;
+  const left = ax - (ax - el.offsetLeft) / k, top = ay - (ay - el.offsetTop) / k;
+  el.classList.remove('small');
+  el.style.left = `${left}px`;
+  el.style.top = `${top}px`;
+  drag = { p, el, id: e.pointerId, x0: e.clientX, y0: e.clientY, left, top, moved: false, flipped: false };
+  drag.timer = setTimeout(() => {
+    if (!drag || drag.moved) return;
+    drag.flipped = true;
+    navigator.vibrate?.(25);
+    reshape(p, flip);
+  }, LONG_PRESS);
   el.classList.add('lifted');
 });
 
@@ -280,6 +289,7 @@ $('.area').addEventListener('pointermove', (e) => {
   const dx = e.clientX - drag.x0, dy = e.clientY - drag.y0;
   if (!drag.moved && Math.hypot(dx, dy) < 6) return;
   drag.moved = true;
+  clearTimeout(drag.timer);
   drag.p.at = null;
   drag.el.style.left = `${drag.left + dx}px`;
   drag.el.style.top = `${drag.top + dy}px`;
@@ -287,18 +297,17 @@ $('.area').addEventListener('pointermove', (e) => {
 
 function endDrag(e) {
   if (!drag || e.pointerId !== drag.id) return;
-  const { p, el, moved } = drag;
+  const { p, el, moved, flipped } = drag;
+  clearTimeout(drag.timer);
   el.classList.remove('lifted');
-  if (moved && running) {
-    p.at = snap(p, p.shape, (el.offsetTop - boardTop) / S, (el.offsetLeft - boardLeft) / S);
-    lastTap = null;
-  }
+  if (moved && running) p.at = snap(p, p.shape, (el.offsetTop - boardTop) / S, (el.offsetLeft - boardLeft) / S);
   drag = null;
-  if (!moved && running) return tap(p);
+  if (!moved && !flipped && running) return reshape(p, rotate);
   layout();
   checkDone();
 }
 $('.area').addEventListener('pointerup', endDrag);
+$('.area').addEventListener('contextmenu', (e) => e.preventDefault()); // no long-press menu
 $('.area').addEventListener('pointercancel', endDrag);
 
 // ---------- screens ----------
